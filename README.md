@@ -6,6 +6,12 @@ This project leverage from Machine learning/Computer vision to make a lower cost
 ## Air selfie 
 Using MediaPipe with the Tello Drone to make selfies. This program gets the video stream from the Tello camera, processes it to make the drone follow the person's face and recognize poses to control the drone.  
 [More](https://github.com/apssouza22/smartdrone/tree/master/airselfie#smart-drone)
+- Control the drone by gestures
+- People tracking
+- People searching
+- Sound feedback
+- Morse commands using the camera
+- Keyboard control
 
 ## Coordinates drawing
 // TODO
