@@ -5,7 +5,7 @@ Using MediaPipe with the Tello Drone to take selfies. This program gets the vide
 This project was highly inspired by [Tello-openpose](https://github.com/geaxgx/tello-openpose) but totally rewritten focusing in simplicity. Everything should work out of the box.
 - Replaced Openpose by MediaPipe
 - Removed multiprocessing support
-- Removed pynput
+- Replaced pynput by pygame
 
 ## Libraries and packages
 
