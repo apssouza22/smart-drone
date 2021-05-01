@@ -1,9 +1,5 @@
 # Smart drone
-Using MediaPipe with the Tello Drone to make selfies. This program gets the video stream from the Tello camera, processes it to make the drone follow the person's face and recognize poses to control the drone.  
-
-Video demonstration here : __[Tello drone and computer vision: selfie air stick](https://youtu.be/RHRQoaqQIgo)__
-
-<img src="media/capture.png" alt="Selfie air stick"  title="Selfie air stick" />
+Using MediaPipe with the Tello Drone to take selfies. This program gets the video stream from the Tello camera, processes it to make the drone follow the person's face and recognize poses to control the drone.  
 
 ## Inspiration
 This project was highly inspired by [Tello-openpose](https://github.com/geaxgx/tello-openpose) but totally rewritten focusing in simplicity. Everything should work out of the box.
