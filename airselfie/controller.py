@@ -46,7 +46,7 @@ class TelloController(object):
 		self.prev_axis_speed = self.axis_speed.copy()
 		self.def_speed = {"rotation": 50, "right-left": 35, "forward-back": 35, "up-down": 80}
 		self.rotation = 0
-		self.toggle_tracking_timestamp = time.time()
+		self.toggle_tracking_timestamp = time.time() - 3
 		self.tracking_after_takeoff = False
 		self.tracking = False
 		self.wait_before_tracking = None
@@ -165,7 +165,7 @@ class TelloController(object):
 			return
 
 		# Our target is the person whose index is 0 in pose_kps
-		target = None
+		self.tracker.target = None
 		self.pose = None
 		height, width, _ = frame.shape
 		proximity = int(width / 2.6)
@@ -187,7 +187,7 @@ class TelloController(object):
 			self.tracker.get_best_body_position(self, width, height)
 
 		if self.tracking:
-			if target:
+			if self.tracker.target:
 				self.tracker.track_target(self, frame)
 			else:
 				self.tracker.find_target(self)

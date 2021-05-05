@@ -11,7 +11,7 @@ class PersonTracker:
 		# When in trackin mode, but no body is detected in current frame,
 		# we make the drone rotate in the hope to find some body
 		# The rotation is done in the same direction as the last rotation done
-		self.body_in_prev_frame = True
+		self.body_in_prev_frame = False
 		self.last_rotation_is_cw = True
 		self.timestamp_no_body = time.time()
 		self.ref_x = None
