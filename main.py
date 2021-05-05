@@ -1,12 +1,5 @@
 """
-Use the Tello drone as an "selfie air stick"
-
-This program control Tello drone https://www.harveynorman.ie/cameras-drones/drones-ireland/all-drones/rryze-tello-drone-powered-by-dji.html
-The control is based on Keyboard and hand gestures
-The body detection is done with MediaPipe
-
-Inspired by https://github.com/geaxgx/tello-openpose
-
+Smart drone
 """
 from airselfie.controller import *
 from pathplan.mapping import PathMapping
