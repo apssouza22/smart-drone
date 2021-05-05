@@ -14,12 +14,13 @@ from simple_pid import PID
 
 from airselfie.cameramorse import CameraMorse
 from airselfie.info import InfoDisplayer
-from airselfie.keycontrol import get_keys_control, get_keys_touched
+from airselfie.keycontrol import get_keys_control
 from airselfie.posecheck import PoseChecker
 from airselfie.posecommand import PoseCommandRunner
 from airselfie.posedetectorwrapper import *
 from airselfie.soundplayer import SoundPlayer, Tone
 from airselfie.tracking import PersonTracker
+from common.utils import get_keys_touched
 
 log = logging.getLogger("TellOpenpose")
 
@@ -124,7 +125,6 @@ class TelloController(object):
 	def set_speed(self, axis, speed):
 		log.info(f"set speed {axis} {speed}")
 		self.cmd_axis_speed[axis] = speed
-
 
 	def process_frame(self, frame):
 		"""
