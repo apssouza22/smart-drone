@@ -13,7 +13,7 @@ Using MediaPipe with the Tello Drone to make selfies. This program gets the vide
 - Morse commands using the camera
 - Keyboard control
 
-## Coordinates drawing
+## Path planning
 // TODO
 
 -----

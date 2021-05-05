@@ -3,7 +3,6 @@ from imutils import face_utils
 import cv2
 import numpy as np
 from djitellopy import tello
-from common import keypress as kp
 
 
 class ControlCommand:
@@ -25,35 +24,35 @@ class ControlCommand:
 
 def handle_keyboard_input(drone_speed, drone_rotation_speed):
 	cc = ControlCommand()
-	if kp.is_key_pressed("LEFT"):
-		cc.left_right = -drone_speed
-
-	elif kp.is_key_pressed("RIGHT"):
-		cc.left_right = drone_speed
-
-	# Forward
-	if kp.is_key_pressed("UP"):
-		cc.forward_back = drone_speed
-
-	# Backward
-	elif kp.is_key_pressed("DOWN"):
-		cc.forward_back = -drone_speed
-
-	# UP
-	if kp.is_key_pressed("w"):
-		cc.up_down = drone_speed
-
-	# Down
-	elif kp.is_key_pressed("s"):
-		cc.up_down = -drone_speed
-
-	# Rotation left
-	if kp.is_key_pressed("a"):
-		cc.rotation = -drone_rotation_speed
-
-	# Rotation right
-	elif kp.is_key_pressed("d"):
-		cc.rotation = drone_rotation_speed
+	# if kp.is_key_pressed("LEFT"):
+	# 	cc.left_right = -drone_speed
+	#
+	# elif kp.is_key_pressed("RIGHT"):
+	# 	cc.left_right = drone_speed
+	#
+	# # Forward
+	# if kp.is_key_pressed("UP"):
+	# 	cc.forward_back = drone_speed
+	#
+	# # Backward
+	# elif kp.is_key_pressed("DOWN"):
+	# 	cc.forward_back = -drone_speed
+	#
+	# # UP
+	# if kp.is_key_pressed("w"):
+	# 	cc.up_down = drone_speed
+	#
+	# # Down
+	# elif kp.is_key_pressed("s"):
+	# 	cc.up_down = -drone_speed
+	#
+	# # Rotation left
+	# if kp.is_key_pressed("a"):
+	# 	cc.rotation = -drone_rotation_speed
+	#
+	# # Rotation right
+	# elif kp.is_key_pressed("d"):
+	# 	cc.rotation = drone_rotation_speed
 
 	return cc
 

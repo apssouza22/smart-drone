@@ -12,14 +12,13 @@ import time
 from djitellopy import tello as drone
 from simple_pid import PID
 
-from common.keypress import is_key_pressed, kp_init
 from airselfie.cameramorse import CameraMorse
-from airselfie.posedetectorwrapper import *
-from airselfie.soundplayer import SoundPlayer, Tone
 from airselfie.info import InfoDisplayer
-from airselfie.keycontrol import get_keys_control
+from airselfie.keycontrol import get_keys_control, get_keys_touched
 from airselfie.posecheck import PoseChecker
 from airselfie.posecommand import PoseCommandRunner
+from airselfie.posedetectorwrapper import *
+from airselfie.soundplayer import SoundPlayer, Tone
 from airselfie.tracking import PersonTracker
 
 log = logging.getLogger("TellOpenpose")
@@ -58,12 +57,14 @@ class TelloController(object):
 		self.timestamp_take_picture = None
 		self.throw_ongoing = False
 		self.scheduled_takeoff = None
+		self.controls_keypress = None
+		self.controls_keyrelease = None
 		self.timestamp_no_body = time.time()
 		self.rotation_to_consume = 0
 		self.set_logging(log_level)
 		self.init_drone()
 		self.init_sounds()
-		self.init_keyboard_controls()
+		self.controls_keypress, self.controls_keyrelease = get_keys_control(self)
 		self.start_time = time.time()
 		self.use_gesture_control = True
 		self.is_pressed = False
@@ -111,25 +112,19 @@ class TelloController(object):
 		self.tone = Tone()
 
 	def keyboard_listener(self):
-		self.set_speed("forward-back", 0),
-		self.set_speed("right-left", 0)
-		self.set_speed("rotation", 0)
-		self.set_speed("up-down", 0)
-
+		pressed, released = get_keys_touched()
 		for keyname in self.controls_keypress:
-			if is_key_pressed(keyname):
+			if keyname in pressed:
 				self.controls_keypress[keyname]()
+
+		for keyname in self.controls_keyrelease:
+			if keyname in released:
+				self.controls_keyrelease[keyname]()
 
 	def set_speed(self, axis, speed):
 		log.info(f"set speed {axis} {speed}")
 		self.cmd_axis_speed[axis] = speed
 
-	def init_keyboard_controls(self):
-		"""
-			Define keys and add listener
-		"""
-		kp_init()
-		self.controls_keypress = get_keys_control(self)
 
 	def process_frame(self, frame):
 		"""

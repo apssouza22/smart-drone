@@ -19,15 +19,12 @@ def get_frame(drone_camera, tello):
 	return lambda: cap.read()[1]
 
 
-def main(drone_camera=True, enable_keyboard=False, log_level=None):
+def main(drone_camera=True, log_level=None):
 	"""
 		Main function
 		drone_camera = False will use your computer camera. Useful for developemnt
-		enable_keyboard = True will enable control the drone with the key board. This will reduce considerably the FPS
 	"""
 	tello = TelloController(log_level=log_level)
-	if enable_keyboard:
-		tello.init_keyboard_controls()
 
 	frame_skip = 300
 	total_frames = 0
@@ -42,8 +39,7 @@ def main(drone_camera=True, enable_keyboard=False, log_level=None):
 		if total_frames % skip_frames != 0:
 			continue
 
-		if enable_keyboard:
-			tello.keyboard_listener()
+		tello.keyboard_listener()
 
 		frame = read_frame_fn()
 		frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
@@ -57,4 +53,4 @@ def main(drone_camera=True, enable_keyboard=False, log_level=None):
 
 
 if __name__ == '__main__':
-	main(True, True, None)
+	main(False, None)
