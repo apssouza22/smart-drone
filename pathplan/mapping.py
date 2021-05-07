@@ -59,7 +59,7 @@ class PathMapping:
 		elif axis_speed["rotation"] > 0:
 			self.angle_sum += self.angle_interval
 
-	def draw_path(self,):
+	def draw_path(self):
 		"""Draw drone moves"""
 		if not self.display:
 			return
@@ -82,6 +82,7 @@ class PathMapping:
 			1, (255, 0, 255), 1
 		)
 		cv2.imshow("Map", img)
+		return img
 
 	def watch(self, drone_controller):
 		"""Watch for drone moves"""
