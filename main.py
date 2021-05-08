@@ -2,7 +2,7 @@
 Smart drone
 """
 from airselfie.controller import *
-from pathplan.mapping import PathMapping
+from pathplan.mapping import PathMapper
 
 
 def get_frame(drone_camera, tello):
@@ -24,10 +24,6 @@ def main(drone_camera=True, log_level=None):
 	total_frames = 0
 	skip_frames = 10
 	read_frame_fn = get_frame(drone_camera, tello)
-	mapping = PathMapping()
-	mapping.watch(tello)
-
-
 	while True:
 		if 0 < frame_skip:
 			frame_skip = frame_skip - 1
@@ -45,7 +41,6 @@ def main(drone_camera=True, log_level=None):
 		tello.fps.update()
 		frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 		cv2.imshow('My image', frame)
-		mapping.draw_path()
 		cv2.waitKey(1)
 
 

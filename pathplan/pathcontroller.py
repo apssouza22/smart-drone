@@ -1,24 +1,32 @@
 import math
 import time
 
+import cv2
+import numpy as np
+
+from common.utils import get_dist_btw_pos
+
 
 class PathController:
 	wp = [
 		{
-			"dist_cm": 155,
-			"angle_deg": 90,
+			"dist_cm": 100,
+			"dist_px": 50,
+			"angle_deg": 0,
 			"angle_dir": "right"
 		},
 		{
 			"dist_cm": 50,
+			"dist_px": 25,
 			"angle_deg": 90,
 			"angle_dir": "right"
 		}
 		,
 		{
-			"dist_cm": 155,
-			"angle_deg": 102,
-			"angle_dir": "right"
+			"dist_cm": 100,
+			"dist_px": 50,
+			"angle_deg": 90,
+			"angle_dir": "left"
 		}
 	]
 	current_point = -1
@@ -26,88 +34,88 @@ class PathController:
 	angle_speed = 360 / 10  # Angular Speed Degrees per second. It took 10s to rotate 360 degrees  (50d/s)
 	rotation_end_time = 0
 	move_end_time = time.time()
+	move_end_point = (0, 0)
+	way_points = []
+	x = 400
+	y = 500
+	angle = -90
+	rotating = False
+	drone_initial_angle = 0
 
-	def calculate_current_position(self):
-		self.angle += self.angle_sum
-		self.x += int(self.distance * math.cos(math.radians(self.angle)))
-		self.y += int(self.distance * math.sin(math.radians(self.angle)))
+	def has_next(self):
+		return len(self.wp) >= self.current_point + 1
 
-	def translate_drone_command(self, axis_speed: {}):
-		"""Translate drone move into screen drawing"""
-		# {"rotation": 0, "right-left": 0, "forward-back": 0, "up-down": 0}
-		self.display = True
-		self.distance = 0
-		self.angle = 0
-
-		if axis_speed["right-left"] < 0:
-			self.distance = self.distance_interval
-			self.angle = -180
-
-		elif axis_speed["right-left"] > 0:
-			self.distance = -self.distance_interval
-			self.angle = 180
-
-		# Forward
-		if axis_speed["forward-back"] > 0:
-			self.distance = self.distance_interval
-			self.angle = 270
-
-		# Backward
-		elif axis_speed["forward-back"] < 0:
-			self.distance = -self.distance_interval
-			self.angle = -90
-
-		# Rotation left
-		if axis_speed["rotation"] < 0:
-			self.angle_sum -= self.angle_interval
-
-		# Rotation right
-		elif axis_speed["rotation"] > 0:
-			self.angle_sum += self.angle_interval
-
-	def draw_path(self,):
-		"""Draw drone moves"""
-		if not self.display:
-			return
-		self.display = False
-
-		self.calculate_current_position()
-
-		if self.points[-1][0] != self.x or self.points[-1][1] != self.y:
-			self.points.append((self.x, self.y))
-
-		img = np.zeros((1000, 800, 3), np.uint8)
-		for point in self.points:
-			cv2.circle(img, point, 5, (0, 0, 255), cv2.FILLED)
-
-		cv2.circle(img, self.points[-1], 8, (0, 255, 0), cv2.FILLED)
-		cv2.putText(
-			img,
-			f'({(self.points[-1][0] - 500) / 100},{(self.points[-1][1] - 500) / 100})m',
-			(self.points[-1][0] + 10, self.points[-1][1] + 30), cv2.FONT_HERSHEY_PLAIN,
-			1, (255, 0, 255), 1
-		)
-		cv2.imshow("Map", img)
-
-
-	def next_point(self):
-		self.current_point = self.current_point + 1
-		if len(self.wp) <= self.current_point:
-			print("End point")
+	def move(self):
+		self.rotating = False
+		if not self.has_next():
 			return {"rotation": 0, "right-left": 0, "forward-back": 0, "up-down": 0}
-		print("Next point")
-		time_distance = self.wp[self.current_point]["dist_cm"] / self.forward_speed
-		self.move_end_time = time.time() + time_distance
-		return {"rotation": 0, "right-left": 0, "forward-back": 35, "up-down": 0}
 
-	def angle_direction(self):
-		time_rotation = self.wp[self.current_point]["angle_deg"] / self.angle_speed
-		self.rotation_end_time = time.time() + time_rotation
-		rotation_speed = int(self.wp[self.current_point]["angle_deg"])
-		if self.wp[self.current_point]["angle_dir"] == "left":
-			rotation_speed = -rotation_speed
+		self.current_point = self.current_point + 1
+
+		self.angle +=self.get_angle()
+		self.calculate_point()
+		self.way_points.append((self.x, self.y))
+
+	def get_command(self):
+		if not self.has_next():
+			return {"rotation": 0, "right-left": 0, "forward-back": 0, "up-down": 0}
+
+		if not self.rotating:
+			return {"rotation": 0, "right-left": 0, "forward-back": 35, "up-down": 0}
+
+		rotation_speed = 30
+		if self.get_angle() > 0:
+			rotation_speed = -30
+
 		return {"rotation": rotation_speed, "right-left": 0, "forward-back": 0, "up-down": 0}
 
-	def has_reached_point(self):
-		print(self.move_end_time,time.time() )
-		return self.move_end_time - time.time() < 0
+	def calculate_point(self):
+		distance_px = self.wp[self.current_point]["dist_px"]
+		self.x += int(distance_px * math.cos(math.radians(self.angle)))
+		self.y += int(distance_px * math.sin(math.radians(self.angle)))
+
+	def get_angle(self):
+		angle = int(self.wp[self.current_point]["angle_deg"])
+		if self.wp[self.current_point]["angle_dir"] == "left":
+			angle = -angle
+		return angle
+
+	def get_next_angle(self):
+		angle = int(self.wp[self.current_point + 1]["angle_deg"])
+		if self.wp[self.current_point]["angle_dir"] == "left":
+			angle = -angle
+		return angle
+
+	def draw_way_points(self, img=None):
+		if img is None:
+			img = np.zeros((1000, 800, 3), np.uint8)
+
+		for point in self.way_points:
+			cv2.circle(img, point, 8, (0, 255, 0), cv2.FILLED)
+		return img
+
+	def angle_direction(self):
+		time_rotation = self.get_angle() / self.angle_speed
+		self.rotation_end_time = time.time() + time_rotation
+		return {"rotation": time_rotation, "right-left": 0, "forward-back": 0, "up-down": 0}
+
+	def has_reached_point(self, x, y, angle):
+		if self.current_point < 0:
+			return True
+
+		dist = get_dist_btw_pos((x, y), (self.x, self.y))
+		if not self.has_next():
+			return True
+
+		if self.rotating:
+			rotated = abs(self.drone_initial_angle) - abs(angle)
+			print("Rotating...", rotated, self.get_next_angle())
+			if self.get_next_angle() == abs(rotated):
+				return True
+			return False
+
+		if dist < 5:
+			self.rotating = True
+			self.drone_initial_angle = angle
+
+		return False

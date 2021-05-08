@@ -6,14 +6,14 @@ import numpy as np
 import math
 
 
-class PathMapping:
+class PathMapper:
 	""" Draw the drone path"""
 
 	forward_speed = 117 / 10  # Forward Speed in cm/s. It took 10s to move 117 centimeters  (15cm/s)
-	angularSpeed = 360 / 10  # Angular Speed Degrees per second. It took 10s to rotate 360 degrees  (50d/s)
+	angle_speed = 360 / 10  # Angular Speed Degrees per second. It took 10s to rotate 360 degrees  (50d/s)
 	interval = 0.25  # interval to draw the map
 	distance_interval = forward_speed * interval
-	angle_interval = angularSpeed * interval
+	angle_interval = angle_speed * interval
 	x, y = 400, 500
 	angle = 0
 	angle_sum = 0
@@ -59,7 +59,7 @@ class PathMapping:
 		elif axis_speed["rotation"] > 0:
 			self.angle_sum += self.angle_interval
 
-	def draw_path(self):
+	def draw_path(self, img=None):
 		"""Draw drone moves"""
 		if not self.display:
 			return
@@ -69,8 +69,9 @@ class PathMapping:
 
 		if self.points[-1][0] != self.x or self.points[-1][1] != self.y:
 			self.points.append((self.x, self.y))
+		if img is None:
+			img = np.zeros((1000, 800, 3), np.uint8)
 
-		img = np.zeros((1000, 800, 3), np.uint8)
 		for point in self.points:
 			cv2.circle(img, point, 5, (0, 0, 255), cv2.FILLED)
 
@@ -90,7 +91,7 @@ class PathMapping:
 		def draw_map(mapping, drone_control):
 			while True:
 				mapping.translate_drone_command(drone_control.axis_speed)
-				time.sleep(PathMapping.interval)
+				time.sleep(PathMapper.interval)
 
 		td = threading.Thread(target=draw_map, args=(self, drone_controller))
 		td.start()

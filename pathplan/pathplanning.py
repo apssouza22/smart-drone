@@ -2,6 +2,8 @@ import pygame
 import json
 import math
 
+from common.utils import get_dist_btw_pos
+
 """
 how many pixel = actual distance in cm
 70px = 360cm --> 360/70 = MAP_SIZE_COEFF
@@ -21,17 +23,6 @@ class Background(pygame.sprite.Sprite):
 		self.image = pygame.transform.rotozoom(self.image, 0, scale)
 		self.rect = self.image.get_rect()
 		self.rect.left, self.rect.top = location
-
-
-def get_dist_btw_pos(pos0, pos1):
-	"""
-	Get distance between 2 mouse position.
-	"""
-	x = abs(pos0[0] - pos1[0])
-	y = abs(pos0[1] - pos1[1])
-	dist_px = math.hypot(x, y)
-	dist_cm = dist_px * MAP_SIZE_COEFF
-	return int(dist_cm), int(dist_px)
 
 
 def get_angle_direction(pos0, pos2):
@@ -104,7 +95,8 @@ path_angle_dir = []
 for index in range(len(path_wp)):
 	# Skip the first and second index.
 	if index > 1:
-		dist_cm, dist_px = get_dist_btw_pos(path_wp[index-1], path_wp[index])
+		dist_px = get_dist_btw_pos(path_wp[index-1], path_wp[index])
+		dist_cm = dist_px * MAP_SIZE_COEFF
 		path_dist_cm.append(dist_cm)
 		path_dist_px.append(dist_px)
 

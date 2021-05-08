@@ -21,6 +21,7 @@ from airselfie.posedetectorwrapper import *
 from airselfie.soundplayer import SoundPlayer, Tone
 from airselfie.tracking import PersonTracker
 from common.utils import get_keys_touched
+from pathplan.mapping import PathMapper
 from pathplan.pathcontroller import PathController
 
 log = logging.getLogger("TellOpenpose")
@@ -77,9 +78,11 @@ class TelloController(object):
 		self.fps = FPS()
 		self.tracker = PersonTracker(log)
 		self.path_planning = PathController()
+		self.path_mapper = PathMapper()
+		self.path_mapper.watch(self)
 
-		# self.delayed_takeoff()
-		# self.toggle_tracking(tracking=True)
+	# self.delayed_takeoff()
+	# self.toggle_tracking(tracking=True)
 
 	def set_logging(self, log_level):
 		# Logging
@@ -153,11 +156,16 @@ class TelloController(object):
 		self.set_current_position()
 		self.morse_eval(frame)
 		self.pose_eval(frame)
+		map_img = None
+		if self.path_planning_enabled:
+			next = self.path_planning.has_reached_point(self.path_mapper.x, self.path_mapper.y, self.path_mapper.angle_sum)
+			if next:
+				self.path_planning.move()
+			self.axis_speed = self.path_planning.get_command()
 
-		if self.path_planning.has_reached_point() and self.path_planning_enabled:
-			self.axis_speed = self.path_planning.next_point()
-
+			map_img = self.path_planning.draw_way_points()
 		self.send_drone_command()
+		self.path_mapper.draw_path(map_img)
 		return self.write_info(frame)
 
 	def pose_eval(self, frame):
