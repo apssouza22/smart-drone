@@ -9,11 +9,9 @@ import math
 class PathMapper:
 	""" Draw the drone path"""
 
-	forward_speed = 117 / 10  # Forward Speed in cm/s. It took 10s to move 117 centimeters  (15cm/s)
-	angle_speed = 360 / 10  # Angular Speed Degrees per second. It took 10s to rotate 360 degrees  (50d/s)
 	interval = 0.25  # interval to draw the map
-	distance_interval = forward_speed * interval
-	angle_interval = angle_speed * interval
+	move_speed = 25 * interval  # 25cm per second
+	rotation_speed = 72 * interval  # 72 degrees per second
 	x, y = 400, 500
 	angle = 0
 	angle_sum = 0
@@ -34,30 +32,30 @@ class PathMapper:
 		self.angle = 0
 
 		if axis_speed["right-left"] < 0:
-			self.distance = self.distance_interval
+			self.distance = self.move_speed
 			self.angle = -180
 
 		elif axis_speed["right-left"] > 0:
-			self.distance = -self.distance_interval
+			self.distance = -self.move_speed
 			self.angle = 180
 
 		# Forward
 		if axis_speed["forward-back"] > 0:
-			self.distance = self.distance_interval
+			self.distance = self.move_speed
 			self.angle = 270
 
 		# Backward
 		elif axis_speed["forward-back"] < 0:
-			self.distance = -self.distance_interval
+			self.distance = -self.move_speed
 			self.angle = -90
 
 		# Rotation left
 		if axis_speed["rotation"] < 0:
-			self.angle_sum -= self.angle_interval
+			self.angle_sum -= self.rotation_speed
 
 		# Rotation right
 		elif axis_speed["rotation"] > 0:
-			self.angle_sum += self.angle_interval
+			self.angle_sum += self.rotation_speed
 
 	def draw_path(self, img=None):
 		"""Draw drone moves"""

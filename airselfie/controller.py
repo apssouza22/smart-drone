@@ -140,6 +140,7 @@ class TelloController(object):
 		if self.scheduled_takeoff and time.time() > self.scheduled_takeoff:
 			self.scheduled_takeoff = None
 			self.drone.takeoff()
+			self.is_flying = True
 			self.axis_speed["up-down"] = 30
 
 		self.axis_speed = self.cmd_axis_speed.copy()
@@ -156,17 +157,28 @@ class TelloController(object):
 		self.set_current_position()
 		self.morse_eval(frame)
 		self.pose_eval(frame)
+		map_img = self.path_handling()
+		self.send_drone_command()
+		self.path_mapper.draw_path(map_img)
+		return self.write_info(frame)
+
+	def path_handling(self):
 		map_img = None
-		if self.path_planning_enabled:
-			next = self.path_planning.has_reached_point(self.path_mapper.x, self.path_mapper.y, self.path_mapper.angle_sum)
-			if next:
+		# self.is_flying = True
+		if self.path_planning_enabled and self.is_flying and not self.path_planning.done:
+			point_reached = self.path_planning.has_reached_point(self.path_mapper.x, self.path_mapper.y, self.path_mapper.angle_sum)
+			if point_reached:
 				self.path_planning.move()
 			self.axis_speed = self.path_planning.get_command()
 
 			map_img = self.path_planning.draw_way_points()
-		self.send_drone_command()
-		self.path_mapper.draw_path(map_img)
-		return self.write_info(frame)
+
+		if self.path_planning.done and self.is_flying:
+			self.drone.land()
+			self.is_flying = False
+
+
+		return map_img
 
 	def pose_eval(self, frame):
 		"""Call to pose detection"""

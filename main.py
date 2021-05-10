@@ -2,7 +2,6 @@
 Smart drone
 """
 from airselfie.controller import *
-from pathplan.mapping import PathMapper
 
 
 def get_frame(drone_camera, tello):
