@@ -171,9 +171,17 @@ class TelloController(object):
 			return
 
 		if self.path_planning_enabled and self.is_flying and not self.path_planning.done:
-			point_reached = self.path_planning.has_reached_point(self.path_mapper.x, self.path_mapper.y, self.path_mapper.angle_sum)
+			if self.path_planning.rotating:
+				print("Waiting drone to rotate...")
+				time.sleep(1)
+				self.path_planning.rotating = False
+
+			point_reached = self.path_planning.has_reached_point(self.path_mapper.x, self.path_mapper.y)
 			if point_reached:
+				self.path_mapper.x = self.path_planning.x
+				self.path_mapper.y = self.path_planning.y
 				self.path_planning.move()
+				self.path_mapper.angle_sum = self.path_planning.angle + 90
 			self.axis_speed = self.path_planning.get_command()
 
 			map_img = self.path_planning.draw_way_points()
