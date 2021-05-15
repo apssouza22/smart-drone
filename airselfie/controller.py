@@ -181,7 +181,7 @@ class TelloController(object):
 				self.path_mapper.x = self.path_planning.x
 				self.path_mapper.y = self.path_planning.y
 				self.path_planning.move()
-				self.path_mapper.angle_sum = self.path_planning.angle + 90
+				self.path_mapper.angle_sum = self.path_planning.angle
 			self.axis_speed = self.path_planning.get_command()
 
 			map_img = self.path_planning.draw_way_points()

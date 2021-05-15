@@ -32,7 +32,7 @@ class PathController:
 	way_points = []
 	x = 400
 	y = 500
-	angle = -90
+	angle = 0
 	rotating = False
 	drone_initial_angle = 0
 	done = False

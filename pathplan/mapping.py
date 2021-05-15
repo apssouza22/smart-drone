@@ -33,21 +33,21 @@ class PathMapper:
 
 		if axis_speed["right-left"] < 0:
 			self.distance = self.move_speed
-			self.angle = -180
+			self.angle = -90
 
 		elif axis_speed["right-left"] > 0:
 			self.distance = -self.move_speed
-			self.angle = 180
+			self.angle = 90
 
 		# Forward
 		if axis_speed["forward-back"] > 0:
 			self.distance = self.move_speed
-			self.angle = 270
+			self.angle = 0
 
 		# Backward
 		elif axis_speed["forward-back"] < 0:
 			self.distance = -self.move_speed
-			self.angle = -90
+			self.angle = 180
 
 		# Rotation left
 		if axis_speed["rotation"] < 0:
