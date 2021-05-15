@@ -1,4 +1,6 @@
+import json
 import math
+import os
 import time
 
 import cv2
@@ -35,12 +37,21 @@ class PathController:
 	drone_initial_angle = 0
 	done = False
 	rotation_direction = None
+	adjust_rotation = 0
+
+	def read_path_plan(self):
+		if not os.path.exists("pathplan/waypoint.json"):
+			return False
+		f = open("pathplan/waypoint.json")
+		self.wp = json.load(f)["wp"]
+		return True
 
 	def move(self):
 		self.rotating = False
 		self.current_point = self.current_point + 1
 
 		self.angle += self.get_angle()
+		self.angle += self.adjust_rotation
 		self.calculate_point()
 		self.way_points.append((self.x, self.y))
 
@@ -84,31 +95,36 @@ class PathController:
 			cv2.circle(img, point, 8, (0, 255, 0), cv2.FILLED)
 		return img
 
-	def has_reached_point(self, x, y, angle):
+	def has_reached_point(self, x, y, drone_angle):
 		if self.current_point < 0:
 			return True
 
 		dist = get_dist_btw_pos((x, y), (self.x, self.y))
 
 		if self.rotating:
-			time.sleep(0.20)
-			rotated = abs(self.drone_initial_angle) - abs(angle)
-			print("Rotating...", rotated, self.get_next_angle())
-			if abs(self.get_next_angle()) == abs(rotated):
-				return True
-			if self.rotation_direction == "right" and abs(self.get_next_angle()) < abs(rotated):
-				return True
+			# time.sleep(0.20)
+			return self.is_rotation_complete(drone_angle)
 
-			if self.rotation_direction == "left" and abs(self.get_next_angle()) < abs(rotated):
-				return True
-			return False
-
-		if dist < 5:
+		if dist < 3:
 			self.rotating = True
-			self.drone_initial_angle = angle
+			self.drone_initial_angle = drone_angle
 			if self.get_next_angle() is None:
 				self.done = True
 				return False
 			self.rotation_direction = self.wp[self.current_point + 1]["angle_dir"]
 
+		return False
+
+	def is_rotation_complete(self, angle):
+		rotated = abs(self.drone_initial_angle) - abs(angle)
+		print("Rotating...", angle, self.angle)
+		if abs(self.get_next_angle()) == abs(rotated):
+			return True
+		if self.rotation_direction == "right" and abs(self.get_next_angle()) < abs(rotated):
+			self.adjust_rotation = abs(abs(self.get_next_angle()) - abs(rotated))
+			return True
+		if self.rotation_direction == "left" and abs(self.get_next_angle()) < abs(rotated):
+			if self.adjust_rotation ==0:
+				self.adjust_rotation = abs(self.get_next_angle()) - abs(rotated)
+			return True
 		return False

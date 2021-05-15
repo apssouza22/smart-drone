@@ -70,6 +70,7 @@ class TelloController(object):
 		self.start_time = time.time()
 		self.use_gesture_control = False
 		self.path_planning_enabled = True
+		self.has_read_plan = False
 		self.is_pressed = False
 		self.battery = self.drone.get_battery()
 		self.op = PoseDetectorWrapper()
@@ -164,7 +165,11 @@ class TelloController(object):
 
 	def path_handling(self):
 		map_img = None
-		# self.is_flying = True
+		self.is_flying = True
+		if not self.has_read_plan:
+			self.has_read_plan = self.path_planning.read_path_plan()
+			return
+
 		if self.path_planning_enabled and self.is_flying and not self.path_planning.done:
 			point_reached = self.path_planning.has_reached_point(self.path_mapper.x, self.path_mapper.y, self.path_mapper.angle_sum)
 			if point_reached:
@@ -176,7 +181,7 @@ class TelloController(object):
 		if self.path_planning.done and self.is_flying:
 			self.drone.land()
 			self.is_flying = False
-
+			self.path_planning_enabled = False
 
 		return map_img
 
