@@ -31,7 +31,8 @@ def main(drone_camera=True, log_level=None):
 		if total_frames % skip_frames != 0:
 			continue
 
-		tello.keyboard_listener()
+		tello.pygame_screen.watch_events()
+
 		frame = read_frame_fn()
 		frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 		frame = cv2.resize(frame, (640, 480))

@@ -14,13 +14,12 @@ from simple_pid import PID
 
 from airselfie.cameramorse import CameraMorse
 from airselfie.info import InfoDisplayer
-from airselfie.keycontrol import get_keys_control
 from airselfie.posecheck import PoseChecker
 from airselfie.posecommand import PoseCommandRunner
 from airselfie.posedetectorwrapper import *
 from airselfie.soundplayer import SoundPlayer, Tone
 from airselfie.tracking import PersonTracker
-from common.utils import get_keys_touched
+from common.pygamescreen import PyGameScreen
 from pathplan.mapping import PathMapper
 from pathplan.pathcontroller import PathController
 
@@ -59,17 +58,14 @@ class TelloController(object):
 		self.timestamp_take_picture = None
 		self.throw_ongoing = False
 		self.scheduled_takeoff = None
-		self.controls_keypress = None
-		self.controls_keyrelease = None
 		self.timestamp_no_body = time.time()
 		self.rotation_to_consume = 0
 		self.set_logging(log_level)
 		self.init_drone()
 		self.init_sounds()
-		self.controls_keypress, self.controls_keyrelease = get_keys_control(self)
 		self.start_time = time.time()
 		self.use_gesture_control = False
-		self.path_planning_enabled = True
+		self.path_planning_enabled = False
 		self.has_read_plan = False
 		self.is_pressed = False
 		self.battery = self.drone.get_battery()
@@ -81,9 +77,14 @@ class TelloController(object):
 		self.path_planning = PathController()
 		self.path_mapper = PathMapper()
 		self.path_mapper.watch(self)
+		self.pygame_screen = PyGameScreen(self)
+		self.pygame_screen.add_listeners()
 
 	# self.delayed_takeoff()
 	# self.toggle_tracking(tracking=True)
+	def open_path_panning(self):
+		self.path_planning_enabled = True
+		self.pygame_screen.load_background()
 
 	def set_logging(self, log_level):
 		# Logging
@@ -117,16 +118,6 @@ class TelloController(object):
 		self.sound_player.load("bonjour", "airselfie/sounds/bonjour.ogg")
 		self.sound_player.load("tracking", "airselfie/sounds/hello.ogg")
 		self.tone = Tone()
-
-	def keyboard_listener(self):
-		pressed, released = get_keys_touched()
-		for keyname in self.controls_keypress:
-			if keyname in pressed:
-				self.controls_keypress[keyname]()
-
-		for keyname in self.controls_keyrelease:
-			if keyname in released:
-				self.controls_keyrelease[keyname]()
 
 	def set_speed(self, axis, speed):
 		log.info(f"set speed {axis} {speed}")

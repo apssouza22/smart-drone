@@ -40,9 +40,9 @@ class PathController:
 	adjust_rotation = 0
 
 	def read_path_plan(self):
-		if not os.path.exists("pathplan/waypoint.json"):
+		if not os.path.exists("waypoint.json"):
 			return False
-		f = open("pathplan/waypoint.json")
+		f = open("waypoint.json")
 		self.wp = json.load(f)["wp"]
 		return True
 
