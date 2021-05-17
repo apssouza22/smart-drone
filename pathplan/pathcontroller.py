@@ -30,25 +30,35 @@ class PathController:
 	]
 	current_point = -1
 	way_points = []
-	x = 400
-	y = 500
+	x = 0
+	y = 0
 	angle = 0
 	rotating = False
 	drone_initial_angle = 0
 	done = False
 	rotation_direction = None
 	adjust_rotation = 0
+	contain_path_plan = False
+	loaded_plan = {}
+
+	def __init__(self):
+		self.delete_path_plan_file()
+		pass
 
 	def read_path_plan(self):
 		if not os.path.exists("waypoint.json"):
-			return False
+			return
 		f = open("waypoint.json")
-		self.wp = json.load(f)["wp"]
-		return True
+		self.loaded_plan = json.load(f)
+		self.wp = self.loaded_plan["wp"]
+		self.x, self.y = self.loaded_plan["pos"][0]
+		self.contain_path_plan = True
 
 	def move(self):
 		self.current_point = self.current_point + 1
-
+		if self.current_point >= len(self.wp):
+			self.done = True
+			return
 		self.angle += self.get_angle()
 		self.calculate_point()
 		self.way_points.append((self.x, self.y))
@@ -60,7 +70,7 @@ class PathController:
 			return {"rotation": 0, "right-left": 0, "forward-back": 35, "up-down": 0}
 
 		rotation_speed = 80
-		if self.get_next_angle() < 0:
+		if self.get_angle() < 0:
 			rotation_speed = -80
 
 		return {"rotation": rotation_speed, "right-left": 0, "forward-back": 0, "up-down": 0}
@@ -75,6 +85,9 @@ class PathController:
 		if self.wp[self.current_point]["angle_dir"] == "left":
 			angle = -angle
 		return angle
+
+	def fix_angle(self, angle):
+		return math.ceil(angle / 5) * 5
 
 	def get_next_angle(self):
 		if len(self.wp) <= self.current_point + 1:
@@ -104,3 +117,8 @@ class PathController:
 			return True
 
 		return False
+
+	@staticmethod
+	def delete_path_plan_file():
+		if os.path.exists("waypoint.json"):
+			os.remove("waypoint.json")

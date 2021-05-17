@@ -66,7 +66,6 @@ class TelloController(object):
 		self.start_time = time.time()
 		self.use_gesture_control = False
 		self.path_planning_enabled = False
-		self.has_read_plan = False
 		self.is_pressed = False
 		self.battery = self.drone.get_battery()
 		self.op = PoseDetectorWrapper()
@@ -84,6 +83,7 @@ class TelloController(object):
 	# self.toggle_tracking(tracking=True)
 	def open_path_panning(self):
 		self.path_planning_enabled = True
+		self.pygame_screen.plan_map_opened = True
 		self.pygame_screen.load_background()
 
 	def set_logging(self, log_level):
@@ -127,6 +127,7 @@ class TelloController(object):
 		"""
 			Analyze the frame and return the frame with information (HUD, openpose skeleton) drawn on it
 		"""
+		self.axis_speed = self.cmd_axis_speed.copy()
 
 		# Is there a scheduled takeoff ?
 		if self.scheduled_takeoff and time.time() > self.scheduled_takeoff:
@@ -134,8 +135,6 @@ class TelloController(object):
 			self.drone.takeoff()
 			self.is_flying = True
 			self.axis_speed["up-down"] = 30
-
-		self.axis_speed = self.cmd_axis_speed.copy()
 
 		# If we are on the point to take a picture, the tracking is temporarily desactivated (2s)
 		if self.timestamp_take_picture:
@@ -149,16 +148,26 @@ class TelloController(object):
 		self.set_current_position()
 		self.morse_eval(frame)
 		self.pose_eval(frame)
-		map_img = self.path_handling()
+		self.draw_pathway()
 		self.send_drone_command()
-		self.path_mapper.draw_path(map_img)
 		return self.write_info(frame)
 
-	def path_handling(self):
+	def draw_pathway(self):
+		map_img = self.path_plan()
+		img = self.path_mapper.draw_path(map_img)
+		if img is not None and not self.pygame_screen.plan_map_opened:
+			img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+			self.pygame_screen.load_background(img)
+
+	def path_plan(self):
 		map_img = None
+
 		self.is_flying = True
-		if not self.has_read_plan:
-			self.has_read_plan = self.path_planning.read_path_plan()
+		self.path_planning_enabled = True
+
+		if self.path_planning_enabled and not self.path_planning.contain_path_plan:
+			self.path_planning.read_path_plan()
+			self.path_mapper.points = [(0, 0)]
 			return
 
 		if self.path_planning_enabled and self.is_flying and not self.path_planning.done:
@@ -173,6 +182,7 @@ class TelloController(object):
 				self.path_mapper.y = self.path_planning.y
 				self.path_planning.move()
 				self.path_mapper.angle_sum = self.path_planning.angle
+
 			self.axis_speed = self.path_planning.get_command()
 
 			map_img = self.path_planning.draw_way_points()

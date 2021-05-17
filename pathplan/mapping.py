@@ -12,7 +12,7 @@ class PathMapper:
 	interval = 0.25  # interval to draw the map
 	move_speed = 25 * interval  # 25cm per second
 	rotation_speed = 72 * interval  # 72 degrees per second
-	x, y = 400, 500
+	x, y = 350, 350
 	angle = 0
 	angle_sum = 0
 	points = [(0, 0), (0, 0)]
@@ -61,14 +61,15 @@ class PathMapper:
 		"""Draw drone moves"""
 		if not self.display:
 			return
-		self.display = False
 
+		if img is None:
+			img = np.zeros((1000, 800, 3), np.uint8)
+
+		self.display = False
 		self.calculate_current_position()
 
 		if self.points[-1][0] != self.x or self.points[-1][1] != self.y:
 			self.points.append((self.x, self.y))
-		if img is None:
-			img = np.zeros((1000, 800, 3), np.uint8)
 
 		for point in self.points:
 			cv2.circle(img, point, 5, (0, 0, 255), cv2.FILLED)
@@ -80,7 +81,6 @@ class PathMapper:
 			(self.points[-1][0] + 10, self.points[-1][1] + 30), cv2.FONT_HERSHEY_PLAIN,
 			1, (255, 0, 255), 1
 		)
-		cv2.imshow("Map", img)
 		return img
 
 	def watch(self, drone_controller):

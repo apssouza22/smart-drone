@@ -9,8 +9,6 @@ def save_path_plan(path_wp):
 	"""
 	Compute the waypoints (distance and angle).
 	"""
-	# Append first pos ref. (dummy)
-	path_wp.insert(0, (path_wp[0][0], path_wp[0][1] - 10))
 
 	path_dist_cm = []
 	path_dist_px = []
@@ -19,7 +17,7 @@ def save_path_plan(path_wp):
 
 	for index in range(len(path_wp)):
 		# Skip the first and second index.
-		if index > 1:
+		if index > 0:
 			dist_px = get_dist_btw_pos(path_wp[index - 1], path_wp[index])
 			dist_cm = dist_px * MAP_SIZE_COEFF
 			path_dist_cm.append(dist_cm)
@@ -30,8 +28,10 @@ def save_path_plan(path_wp):
 			path_angle_dir.append("right")
 
 		# Skip the first and last index.
-		if index > 1 and index < (len(path_wp) - 1):
+		if index > 0 and index < (len(path_wp) - 1):
 			angle = get_angle_btw_line(path_wp[index - 1], path_wp[index], path_wp[index + 1])
+			# workaround for an issue when calculating angle direction on pathcontroller when angle is not divisible for 5
+			angle = math.ceil(angle / 5) * 5
 			angle_dir = get_angle_direction(path_wp[index - 1], path_wp[index + 1])
 			path_angle.append(angle)
 			path_angle_dir.append(angle_dir)
@@ -65,11 +65,11 @@ def get_angle_direction(pos0, pos2):
 		if y0 < y1:
 			return "right"
 		else:
-			return "right"
+			return "left"
 
 	if y0 < y1:
-		return "left"
-	return "right"
+		return "right"
+	return "left"
 
 
 def get_angle_btw_line(pos0, pos1, pos2):

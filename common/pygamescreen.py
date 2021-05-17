@@ -1,3 +1,4 @@
+import os
 import time
 
 import numpy
@@ -14,9 +15,14 @@ class PyGameScreen:
 		self.listeners = {}
 		self.path_wp = []
 		self.index = 0
+		self.plan_map_opened = False
 
-	def load_background(self, img="pathplan/house.png"):
-		image = pygame.image.load(img)
+	def load_background(self, img=None):
+		if img is None:
+			image = pygame.image.load("pathplan/house.png")
+		else:
+			image = self.cvimage_to_pygame(img)
+
 		image = pygame.transform.rotozoom(image, 0, 1)
 		rect = image.get_rect()
 		rect.left, rect.top = [0, 0]
@@ -50,6 +56,8 @@ class PyGameScreen:
 		self.add_listener(self.quit_listener, pygame.QUIT)
 
 	def mouse_button_down_listener(self, event):
+		if not self.plan_map_opened:
+			return
 		pos = pygame.mouse.get_pos()
 		self.path_wp.append(pos)
 		if self.index > 0:
@@ -67,13 +75,9 @@ class PyGameScreen:
 
 	def quit_listener(self, event):
 		save_path_plan(self.path_wp)
+		self.plan_map_opened = False
 		img = numpy.zeros((1000, 800, 3), numpy.uint8)
-		image = self.cvimage_to_pygame(img)
-		rect = image.get_rect()
-		rect.left, rect.top = [0, 0]
-		self.screen.blit(image, rect)
-		pygame.display.update()
-
+		self.load_background(img)
 
 
 
