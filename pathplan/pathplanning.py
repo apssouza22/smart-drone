@@ -50,7 +50,6 @@ def save_path_plan(path_wp):
 
 	# Save to JSON file.
 	f = open('waypoint.json', 'w+')
-	path_wp.pop(0)
 	json.dump({
 		"wp": waypoints,
 		"pos": path_wp

@@ -61,7 +61,7 @@ class InfoDisplayer:
 			self.add(f"UP 0")
 
 		if tello.use_gesture_control:
-			self.add(f"POSE: {tello.pose}", (0, 255, 0) if tello.pose else (255, 170, 0))
+			self.add(f"POSE: {tello.use_gesture_control}", (0, 255, 0) if tello.use_gesture_control else (255, 170, 0))
 		if tello.keep_distance:
 			self.add(f"Target distance: {tello.keep_distance} - curr: {tello.shoulders_width}", (0, 255, 0))
 		if tello.timestamp_take_picture:

@@ -163,7 +163,7 @@ class TelloController(object):
 		map_img = None
 
 		self.is_flying = True
-		self.path_planning_enabled = True
+		# self.path_planning_enabled = True
 
 		if self.path_planning_enabled and not self.path_planning.contain_path_plan:
 			self.path_planning.read_path_plan()
@@ -311,7 +311,9 @@ class TelloController(object):
 			return
 
 		self.toggle_tracking_timestamp = time.time()
-		self.sound_player.play("tracking")
+		if self.tracking != tracking:
+			self.sound_player.play("tracking")
+
 		if tracking is None:
 			self.tracking = not self.tracking
 		else:

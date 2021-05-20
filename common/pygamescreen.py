@@ -134,3 +134,4 @@ def takeoff(tello):
 def key_quit(tello):
 	tello.toggle_tracking(False)
 	tello.drone.land()
+	tello.is_flying = False
