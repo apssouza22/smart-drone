@@ -22,6 +22,7 @@ from gesturecontrol.tracking import PersonTracker
 from common.pygamescreen import PyGameScreen
 from common.mapping import PathMapper
 from pathplan.pathcontroller import PathController
+from pathplan.pathmanager import PathManager
 
 log = logging.getLogger("TellOpenpose")
 
@@ -65,7 +66,6 @@ class TelloController(object):
 		self.init_sounds()
 		self.start_time = time.time()
 		self.use_gesture_control = False
-		self.path_planning_enabled = False
 		self.is_pressed = False
 		self.battery = self.drone.get_battery()
 		self.op = PoseDetectorWrapper()
@@ -73,16 +73,16 @@ class TelloController(object):
 		self.morse.define_command("-", self.delayed_takeoff)
 		self.fps = FPS()
 		self.tracker = PersonTracker(log)
-		self.path_planning = PathController()
-		self.path_mapper = PathMapper()
-		self.path_mapper.watch(self)
 		self.pygame_screen = PyGameScreen(self)
 		self.pygame_screen.add_listeners()
+
+		self.path_manager = PathManager(self.pygame_screen)
+		self.path_manager.watch(self)
 
 	# self.delayed_takeoff()
 	# self.toggle_tracking(tracking=True)
 	def open_path_panning(self):
-		self.path_planning_enabled = True
+		self.path_manager.path_planning_enabled = True
 		self.pygame_screen.plan_map_opened = True
 		self.pygame_screen.load_background()
 
@@ -123,7 +123,7 @@ class TelloController(object):
 		log.info(f"set speed {axis} {speed}")
 		self.cmd_axis_speed[axis] = speed
 
-	def process_frame(self, frame):
+	def process(self, frame):
 		"""
 			Analyze the frame and return the frame with information (HUD, openpose skeleton) drawn on it
 		"""
@@ -148,53 +148,15 @@ class TelloController(object):
 		self.set_current_position()
 		self.morse_eval(frame)
 		self.pose_eval(frame)
-		self.draw_pathway()
+		self.handle_drone_path()
 		self.send_drone_command()
 		return self.write_info(frame)
 
-	def draw_pathway(self):
-		map_img = self.path_plan()
-		img = self.path_mapper.draw_path(map_img)
-		if img is not None and not self.pygame_screen.plan_map_opened:
-			img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-			self.pygame_screen.load_background(img)
-
-	def path_plan(self):
-		map_img = None
-
-		# self.is_flying = True
-		self.path_planning_enabled = True
-
-		if self.path_planning_enabled and not self.path_planning.contain_path_plan:
-			self.path_planning.read_path_plan()
-			self.path_mapper.points = [(0, 0)]
-			time.sleep(1)
-			return
-
-		if self.path_planning_enabled and self.is_flying and not self.path_planning.done:
-			if self.path_planning.rotating:
-				rotation_time = abs(self.path_planning.get_angle()) * 0.0133
-				print("Drone rotation. Waiting "+str(rotation_time)+" ...")
-				time.sleep(rotation_time)
-				self.path_planning.rotating = False
-
-			point_reached = self.path_planning.has_reached_point(self.path_mapper.x, self.path_mapper.y)
-			if point_reached:
-				self.path_mapper.x = self.path_planning.x
-				self.path_mapper.y = self.path_planning.y
-				self.path_planning.move()
-				self.path_mapper.angle_rotation = self.path_planning.angle
-
-			self.axis_speed = self.path_planning.get_command()
-
-			map_img = self.path_planning.draw_way_points()
-
-		if self.path_planning.done and self.is_flying:
+	def handle_drone_path(self):
+		self.axis_speed = self.path_manager.handle(self.axis_speed, self.is_flying)
+		if self.path_manager.path_planning.done and self.is_flying:
 			self.drone.land()
 			self.is_flying = False
-			self.path_planning_enabled = False
-
-		return map_img
 
 	def pose_eval(self, frame):
 		"""Call to pose detection"""

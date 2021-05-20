@@ -25,7 +25,7 @@ class PathController:
 	loaded_plan = {}
 
 	def __init__(self):
-		# self.delete_path_plan_file()
+		self.delete_path_plan_file()
 		pass
 
 	def read_path_plan(self):

@@ -36,7 +36,7 @@ def main(drone_camera=True, log_level=None):
 		frame = read_frame_fn()
 		frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 		frame = cv2.resize(frame, (640, 480))
-		frame = tello.process_frame(frame)
+		frame = tello.process(frame)
 		tello.sound_player.play()
 		tello.fps.update()
 		frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
