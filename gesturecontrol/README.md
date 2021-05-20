@@ -19,7 +19,3 @@ https://github.com/m-lundberg/simple-pid
 Used here to control the yaw, pitch, rolling and throttle of the drone. 
 
 The parameters of the PIDs may depend on the processing speed and need tuning to adapt to the FPS you can get. For instance, if the PID that controls the yaw works well at 20 frames/sec, it may yield oscillating yaw at 10 frames/sec.  
-
-
------
-A big thanks to all the people who wrote and shared the libraries/programs I have used for this project !

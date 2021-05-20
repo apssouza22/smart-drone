@@ -12,15 +12,15 @@ import time
 from djitellopy import tello as drone
 from simple_pid import PID
 
-from airselfie.cameramorse import CameraMorse
-from airselfie.info import InfoDisplayer
-from airselfie.posecheck import PoseChecker
-from airselfie.posecommand import PoseCommandRunner
-from airselfie.posedetectorwrapper import *
-from airselfie.soundplayer import SoundPlayer, Tone
-from airselfie.tracking import PersonTracker
+from common.cameramorse import CameraMorse
+from common.info import InfoDisplayer
+from gesturecontrol.posecheck import PoseChecker
+from gesturecontrol.posecommand import PoseCommandRunner
+from gesturecontrol.posedetectorwrapper import *
+from common.soundplayer import SoundPlayer, Tone
+from gesturecontrol.tracking import PersonTracker
 from common.pygamescreen import PyGameScreen
-from pathplan.mapping import PathMapper
+from common.mapping import PathMapper
 from pathplan.pathcontroller import PathController
 
 log = logging.getLogger("TellOpenpose")
@@ -109,14 +109,14 @@ class TelloController(object):
 
 	def init_sounds(self):
 		self.sound_player = SoundPlayer()
-		self.sound_player.load("approaching", "airselfie/sounds/approaching.ogg")
-		self.sound_player.load("keeping distance", "airselfie/sounds/keeping_distance.ogg")
-		self.sound_player.load("landing", "airselfie/sounds/landing.ogg")
-		self.sound_player.load("palm landing", "airselfie/sounds/palm_landing.ogg")
-		self.sound_player.load("taking picture", "airselfie/sounds/taking_picture.ogg")
-		self.sound_player.load("free", "airselfie/sounds/free.ogg")
-		self.sound_player.load("bonjour", "airselfie/sounds/bonjour.ogg")
-		self.sound_player.load("tracking", "airselfie/sounds/hello.ogg")
+		self.sound_player.load("approaching", "assets/sounds/approaching.ogg")
+		self.sound_player.load("keeping distance", "assets/sounds/keeping_distance.ogg")
+		self.sound_player.load("landing", "assets/sounds/landing.ogg")
+		self.sound_player.load("palm landing", "assets/sounds/palm_landing.ogg")
+		self.sound_player.load("taking picture", "assets/sounds/taking_picture.ogg")
+		self.sound_player.load("free", "assets/sounds/free.ogg")
+		self.sound_player.load("bonjour", "assets/sounds/bonjour.ogg")
+		self.sound_player.load("tracking", "assets/sounds/hello.ogg")
 		self.tone = Tone()
 
 	def set_speed(self, axis, speed):

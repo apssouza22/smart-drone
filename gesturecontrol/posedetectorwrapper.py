@@ -10,7 +10,7 @@ from collections import namedtuple
 import cv2
 
 from common import posemodule as pm
-from airselfie.fps import FPS
+from common.fps import FPS
 
 body_kp_id_to_name = {
 	0: "nose",

@@ -1,7 +1,7 @@
 """
 Smart drone
 """
-from airselfie.controller import *
+from common.controller import *
 
 
 def get_frame(drone_camera, tello):

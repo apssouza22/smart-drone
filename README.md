@@ -4,14 +4,15 @@ This project leverage from Machine learning/Computer vision to make a lower cost
 
 
 ## Features  
-[More](https://github.com/apssouza22/smartdrone/tree/master/airselfie#smart-drone)
+[More](https://github.com/apssouza22/smartdrone/tree/master/gesturecontrol#smart-drone)
 - Control the drone by gestures
 - People tracking
 - People searching
 - Sound feedback
 - Morse commands using the camera
 - Keyboard control
-- Draw the drone traveled path
+- Drone path way monitoring
+- Drone path way planning
 
 
 -----

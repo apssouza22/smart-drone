@@ -46,7 +46,7 @@ class PathMapper:
 
 		# Backward
 		elif axis_speed["forward-back"] < 0:
-			self.distance = -self.move_speed
+			self.distance = self.move_speed
 			self.angle = 180
 
 		# Rotation left
