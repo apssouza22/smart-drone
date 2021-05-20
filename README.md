@@ -11,8 +11,8 @@ This project leverage from Machine learning/Computer vision to make a lower cost
 - Sound feedback
 - Morse commands using the camera
 - Keyboard control
-- Drone path way monitoring
-- Drone path way planning
+- Drone path monitoring
+- Drone path planning
 
 
 -----

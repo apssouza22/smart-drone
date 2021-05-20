@@ -33,8 +33,9 @@ def save_path_plan(path_wp):
 			# workaround for an issue when calculating angle direction on pathcontroller when angle is not divisible for 5
 			angle = math.ceil(angle / 5) * 5
 			angle_dir = get_angle_direction(path_wp[index - 1], path_wp[index + 1])
+			# path_angle_dir.append(angle_dir)
+			path_angle_dir.append("right")
 			path_angle.append(angle)
-			path_angle_dir.append(angle_dir)
 
 	"""
 	Save waypoints into JSON file.
@@ -58,6 +59,7 @@ def save_path_plan(path_wp):
 
 
 def get_angle_direction(pos0, pos2):
+	## Fix this using something like https://stackoverflow.com/questions/31630946/get-angle-between-two-2d-lines-with-respect-to-the-direction-of-the-lines
 	x0, y0 = pos0[0], pos0[1]
 	x1, y1 = pos2[0], pos2[1]
 	if x0 < x1:
