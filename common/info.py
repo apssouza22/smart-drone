@@ -22,8 +22,10 @@ class InfoDisplayer:
 			)  # lineType=30)
 			i += 1
 
-	def display_info(self, tello, frame):
-		self.add(f"FPS {tello.fps.get():.2f}")
+	def display_info(self, tello, frame, fps):
+		self.infos = []
+		fps.update()
+		self.add(f"FPS {fps.get():.2f}")
 		self.add(f"BAT {tello.battery}")
 		self.add(f"TRACKING {'ON' if tello.tracking else 'OFF'}", (0, 255, 0) if tello.tracking else (0, 0, 255))
 

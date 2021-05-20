@@ -13,24 +13,20 @@ from djitellopy import tello as drone
 from simple_pid import PID
 
 from common.cameramorse import CameraMorse
-from common.info import InfoDisplayer
+from common.pygamescreen import PyGameScreen
+from common.soundplayer import SoundPlayer, Tone
 from gesturecontrol.posecheck import PoseChecker
 from gesturecontrol.posecommand import PoseCommandRunner
 from gesturecontrol.posedetectorwrapper import *
-from common.soundplayer import SoundPlayer, Tone
 from gesturecontrol.tracking import PersonTracker
-from common.pygamescreen import PyGameScreen
-from common.mapping import PathMapper
-from pathplan.pathcontroller import PathController
 from pathplan.pathmanager import PathManager
 
 log = logging.getLogger("TellOpenpose")
 
 
-class TelloController(object):
+class TelloEngine(object):
 	"""
-	TelloController builds keyboard controls on top of TelloPy as well
-	as generating images from the video stream and enabling opencv support
+	TelloEngine is the engine under all the features on top of Tello drone
 	"""
 
 	def __init__(
@@ -41,9 +37,8 @@ class TelloController(object):
 		self.pose = None
 		self.log_level = log_level
 		self.is_flying = False
-		self.drone = drone.Tello()
+		self.drone_sdk = drone.Tello()
 		self.axis_speed = {"rotation": 0, "right-left": 0, "forward-back": 0, "up-down": 0}
-
 		self.cmd_axis_speed = {"rotation": 0, "right-left": 0, "forward-back": 0, "up-down": 0}
 		self.prev_axis_speed = self.axis_speed.copy()
 		self.def_speed = {"rotation": 50, "right-left": 35, "forward-back": 35, "up-down": 80}
@@ -67,11 +62,10 @@ class TelloController(object):
 		self.start_time = time.time()
 		self.use_gesture_control = False
 		self.is_pressed = False
-		self.battery = self.drone.get_battery()
+		self.battery = self.drone_sdk.get_battery()
 		self.op = PoseDetectorWrapper()
 		self.morse = CameraMorse(display=False)
 		self.morse.define_command("-", self.delayed_takeoff)
-		self.fps = FPS()
 		self.tracker = PersonTracker(log)
 		self.pygame_screen = PyGameScreen(self)
 		self.pygame_screen.add_listeners()
@@ -79,15 +73,14 @@ class TelloController(object):
 		self.path_manager = PathManager(self.pygame_screen)
 		self.path_manager.watch(self)
 
-	# self.delayed_takeoff()
-	# self.toggle_tracking(tracking=True)
 	def open_path_panning(self):
+		""" Open the path planning screen for drawing the drone path"""
 		self.path_manager.path_planning_enabled = True
 		self.pygame_screen.plan_map_opened = True
 		self.pygame_screen.load_background()
 
 	def set_logging(self, log_level):
-		# Logging
+		"""Set logging framework"""
 		self.log_level = log_level
 		if log_level is not None:
 			if log_level == "info":
@@ -102,12 +95,13 @@ class TelloController(object):
 
 	def init_drone(self):
 		"""
-			Connect to the drone, start streaming and subscribe to events
+			Connect to the drone, start streaming camera
 		"""
-		self.drone.connect()
-		self.drone.streamon()
+		self.drone_sdk.connect()
+		self.drone_sdk.streamon()
 
 	def init_sounds(self):
+		"""Initiate the sound feedback"""
 		self.sound_player = SoundPlayer()
 		self.sound_player.load("approaching", "assets/sounds/approaching.ogg")
 		self.sound_player.load("keeping distance", "assets/sounds/keeping_distance.ogg")
@@ -125,16 +119,11 @@ class TelloController(object):
 
 	def process(self, frame):
 		"""
-			Analyze the frame and return the frame with information (HUD, openpose skeleton) drawn on it
+			Process event loop
 		"""
 		self.axis_speed = self.cmd_axis_speed.copy()
 
-		# Is there a scheduled takeoff ?
-		if self.scheduled_takeoff and time.time() > self.scheduled_takeoff:
-			self.scheduled_takeoff = None
-			self.drone.takeoff()
-			self.is_flying = True
-			self.axis_speed["up-down"] = 30
+		self.handle_takeoff()
 
 		# If we are on the point to take a picture, the tracking is temporarily desactivated (2s)
 		if self.timestamp_take_picture:
@@ -143,19 +132,28 @@ class TelloController(object):
 				self.take_picture(frame)
 
 			self.send_drone_command()
-			return self.write_info(frame)
+			return frame
 
 		self.set_current_position()
 		self.morse_eval(frame)
 		self.pose_eval(frame)
 		self.handle_drone_path()
 		self.send_drone_command()
-		return self.write_info(frame)
+		return frame
+
+	def handle_takeoff(self):
+		# Is there a scheduled takeoff ?
+		if self.scheduled_takeoff and time.time() > self.scheduled_takeoff:
+			self.scheduled_takeoff = None
+			self.drone_sdk.takeoff()
+			self.is_flying = True
+			self.axis_speed["up-down"] = 30
 
 	def handle_drone_path(self):
+		"""handle the drone path drawing and drone path planning"""
 		self.axis_speed = self.path_manager.handle(self.axis_speed, self.is_flying)
 		if self.path_manager.path_planning.done and self.is_flying:
-			self.drone.land()
+			self.drone_sdk.land()
 			self.is_flying = False
 
 	def pose_eval(self, frame):
@@ -175,7 +173,6 @@ class TelloController(object):
 			# We found a body, so we can cancel the exploring 360
 			self.rotation_to_consume = 0
 
-			# Do we recognize a predefined pose ?
 			check = PoseChecker(self)
 			self.pose = check.get_pose(frame)
 
@@ -222,19 +219,12 @@ class TelloController(object):
 				# This line is necessary to display current values in 'self.write_hud'
 				self.axis_speed[axis] = self.prev_axis_speed[axis]
 
-		self.drone.send_rc_control(
+		self.drone_sdk.send_rc_control(
 			int(self.axis_speed["right-left"]),
 			int(self.axis_speed["forward-back"]),
 			int(self.axis_speed["up-down"]),
 			int(self.axis_speed["rotation"])
 		)
-
-	def write_info(self, frame):
-		"""
-			Draw drone info on frame
-		"""
-		info = InfoDisplayer()
-		return info.display_info(self, frame)
 
 	def take_picture(self, frame):
 		"""
@@ -249,7 +239,7 @@ class TelloController(object):
 		"""
 		self.palm_landing = True
 		self.sound_player.play("palm landing")
-		self.drone.palm_land()
+		self.drone_sdk.palm_land()
 
 	def delayed_takeoff(self, delay=5):
 		self.scheduled_takeoff = time.time() + delay
@@ -261,6 +251,8 @@ class TelloController(object):
 		self.prev_rotation = self.rotation
 
 	def toggle_gesture_control(self):
+		"""Enable | Disable control by gesture"""
+
 		self.use_gesture_control = not self.use_gesture_control
 		if not self.use_gesture_control:
 			self.toggle_tracking(tracking=False)

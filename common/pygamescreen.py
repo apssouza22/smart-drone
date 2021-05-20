@@ -105,10 +105,10 @@ def get_keys_control(tello):
 		pygame.K_d: lambda: tello.set_speed("right-left", tello.def_speed["right-left"]),
 		pygame.K_q: lambda: tello.set_speed("rotation", -tello.def_speed["rotation"]),
 		pygame.K_e: lambda: tello.set_speed("rotation", tello.def_speed["rotation"]),
-		pygame.K_i: lambda: tello.drone.flip_forward(),
-		pygame.K_k: lambda: tello.drone.flip_back(),
-		pygame.K_j: lambda: tello.drone.flip_left(),
-		pygame.K_l: lambda: tello.drone.flip_right(),
+		pygame.K_i: lambda: tello.drone_sdk.flip_forward(),
+		pygame.K_k: lambda: tello.drone_sdk.flip_back(),
+		pygame.K_j: lambda: tello.drone_sdk.flip_left(),
+		pygame.K_l: lambda: tello.drone_sdk.flip_right(),
 		pygame.K_p: lambda: tello.open_path_panning(),
 		pygame.K_t: lambda: tello.toggle_tracking(),
 		pygame.K_o: lambda: tello.toggle_gesture_control(),
@@ -118,7 +118,7 @@ def get_keys_control(tello):
 		pygame.K_UP: lambda: tello.set_speed("up-down", tello.def_speed["up-down"]),
 		pygame.K_DOWN: lambda: tello.set_speed("up-down", -tello.def_speed["up-down"]),
 		pygame.K_TAB: lambda: takeoff(tello),
-		pygame.K_BACKSPACE: lambda: tello.drone.land(),
+		pygame.K_BACKSPACE: lambda: tello.drone_sdk.land(),
 		pygame.K_KP_ENTER: lambda: tello.take_picture(),
 	}
 	return controls_key_pressed, controls_key_release
@@ -128,10 +128,10 @@ def takeoff(tello):
 	time.sleep(2)
 	tello.is_flying = True
 	tello.axis_speed["up-down"] = 30
-	return tello.drone.takeoff()
+	return tello.drone_sdk.takeoff()
 
 
 def key_quit(tello):
 	tello.toggle_tracking(False)
-	tello.drone.land()
+	tello.drone_sdk.land()
 	tello.is_flying = False

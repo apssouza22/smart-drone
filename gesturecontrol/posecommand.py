@@ -84,7 +84,7 @@ class PoseCommandRunner:
 		if not tello.palm_landing:
 			log.info("LANDING on pose")
 			tello.toggle_tracking(tracking=False)
-			tello.drone.land()
+			tello.drone_sdk.land()
 			tello.sound_player.play("landing")
 			tello.is_flying = False
 
