@@ -13,49 +13,51 @@ class PathMapper:
 	move_speed = 25 * interval  # 25cm per second
 	rotation_speed = 72 * interval  # 72 degrees per second
 	x, y = 350, 350
-	angle = 0
-	angle_sum = 0
+	angle_direction = 0
+	angle_rotation = 0
 	points = [(0, 0), (0, 0)]
 	distance = 0
 	display = True
 
 	def calculate_current_position(self):
-		self.angle += self.angle_sum
-		self.x += int(self.distance * math.cos(math.radians(self.angle)))
-		self.y += int(self.distance * math.sin(math.radians(self.angle)))
+		self.angle_direction += self.angle_rotation
+		self.x += int(self.distance * math.cos(math.radians(self.angle_direction)))
+		self.y += int(self.distance * math.sin(math.radians(self.angle_direction)))
 
 	def translate_drone_command(self, axis_speed: {}):
 		"""Translate drone move into screen drawing"""
 		# {"rotation": 0, "right-left": 0, "forward-back": 0, "up-down": 0}
 		self.display = True
 		self.distance = 0
-		self.angle = 0
+		self.angle_direction = 0
 
+		# left
 		if axis_speed["right-left"] < 0:
 			self.distance = self.move_speed
-			self.angle = -90
+			self.angle_direction = -90
 
-		elif axis_speed["right-left"] > 0:
-			self.distance = -self.move_speed
-			self.angle = 90
+		# right
+		if axis_speed["right-left"] > 0:
+			self.distance = self.move_speed
+			self.angle_direction = 90
 
 		# Forward
 		if axis_speed["forward-back"] > 0:
 			self.distance = self.move_speed
-			self.angle = 0
+			self.angle_direction = 0
 
 		# Backward
-		elif axis_speed["forward-back"] < 0:
+		if axis_speed["forward-back"] < 0:
 			self.distance = self.move_speed
-			self.angle = 180
+			self.angle_direction = 180
 
 		# Rotation left
 		if axis_speed["rotation"] < 0:
-			self.angle_sum -= self.rotation_speed
+			self.angle_rotation -= self.rotation_speed
 
 		# Rotation right
-		elif axis_speed["rotation"] > 0:
-			self.angle_sum += self.rotation_speed
+		if axis_speed["rotation"] > 0:
+			self.angle_rotation += self.rotation_speed
 
 	def draw_path(self, img=None):
 		"""Draw drone moves"""

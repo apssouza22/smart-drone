@@ -10,24 +10,7 @@ from common.utils import get_dist_btw_pos
 
 
 class PathController:
-	wp = [
-		{
-			"dist_px": 80,
-			"angle_deg": 0,
-			"angle_dir": "right"
-		},
-		{
-			"dist_px": 50,
-			"angle_deg": 90,
-			"angle_dir": "right"
-		}
-		,
-		{
-			"dist_px": 80,
-			"angle_deg": 90,
-			"angle_dir": "right"
-		}
-	]
+	wp = []
 	current_point = -1
 	way_points = []
 	x = 0
@@ -42,7 +25,7 @@ class PathController:
 	loaded_plan = {}
 
 	def __init__(self):
-		self.delete_path_plan_file()
+		# self.delete_path_plan_file()
 		pass
 
 	def read_path_plan(self):
@@ -112,7 +95,7 @@ class PathController:
 
 		dist = get_dist_btw_pos((x, y), (self.x, self.y))
 
-		if dist < 5:
+		if dist < 10:
 			self.rotating = True
 			return True
 

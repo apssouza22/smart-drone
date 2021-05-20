@@ -162,18 +162,20 @@ class TelloController(object):
 	def path_plan(self):
 		map_img = None
 
-		self.is_flying = True
-		# self.path_planning_enabled = True
+		# self.is_flying = True
+		self.path_planning_enabled = True
 
 		if self.path_planning_enabled and not self.path_planning.contain_path_plan:
 			self.path_planning.read_path_plan()
 			self.path_mapper.points = [(0, 0)]
+			time.sleep(1)
 			return
 
 		if self.path_planning_enabled and self.is_flying and not self.path_planning.done:
 			if self.path_planning.rotating:
-				print("Waiting drone to rotate...")
-				time.sleep(1)
+				rotation_time = abs(self.path_planning.get_angle()) * 0.0133
+				print("Drone rotation. Waiting "+str(rotation_time)+" ...")
+				time.sleep(rotation_time)
 				self.path_planning.rotating = False
 
 			point_reached = self.path_planning.has_reached_point(self.path_mapper.x, self.path_mapper.y)
@@ -181,7 +183,7 @@ class TelloController(object):
 				self.path_mapper.x = self.path_planning.x
 				self.path_mapper.y = self.path_planning.y
 				self.path_planning.move()
-				self.path_mapper.angle_sum = self.path_planning.angle
+				self.path_mapper.angle_rotation = self.path_planning.angle
 
 			self.axis_speed = self.path_planning.get_command()
 
