@@ -105,13 +105,13 @@ class PoseCommandRunner:
 			"LEFT_HAND_FINGERS_UP_2": self.go_back,
 
 			# Commands disabled at the moment
-			"HANDS_ON_NECK": self.take_picture,
-			"HANDS_ON_EARS": self.take_picture,
-			"LEFT_HAND_ON_RIGHT_EAR": self.land,
-			"RIGHT_HAND_ON_LEFT_EAR": self.palm_land,
-			"CLOSE_HANDS_UP": self.lock_dist,
-			"LEFT_ARM_UP_OPEN": self.go_back,
-			"LEFT_ARM_UP_CLOSED": self.go_forward,
-			"RIGHT_ARM_UP_OPEN": self.go_right,
-			"RIGHT_ARM_UP_CLOSED": self.go_left,
+			# "HANDS_ON_NECK": self.take_picture,
+			# "HANDS_ON_EARS": self.take_picture,
+			# "LEFT_HAND_ON_RIGHT_EAR": self.land,
+			# "RIGHT_HAND_ON_LEFT_EAR": self.palm_land,
+			# "CLOSE_HANDS_UP": self.lock_dist,
+			# "LEFT_ARM_UP_OPEN": self.go_back,
+			# "LEFT_ARM_UP_CLOSED": self.go_forward,
+			# "RIGHT_ARM_UP_OPEN": self.go_right,
+			# "RIGHT_ARM_UP_CLOSED": self.go_left,
 		}

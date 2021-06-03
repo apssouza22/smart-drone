@@ -110,7 +110,10 @@ class TelloEngine(object):
 		self.sound_player.load("taking picture", "assets/sounds/taking_picture.ogg")
 		self.sound_player.load("free", "assets/sounds/free.ogg")
 		self.sound_player.load("bonjour", "assets/sounds/bonjour.ogg")
-		self.sound_player.load("tracking", "assets/sounds/hello.ogg")
+		self.sound_player.load("tracking-enabled", "assets/sounds/tracking-enabled.ogg")
+		self.sound_player.load("tracking-disabled", "assets/sounds/tracking-disabled.ogg")
+		self.sound_player.load("gesture-enabled", "assets/sounds/gesture-enabled.ogg")
+		self.sound_player.load("gesture-disabled", "assets/sounds/gesture-disabled.ogg")
 		self.tone = Tone()
 
 	def set_speed(self, axis, speed):
@@ -158,10 +161,7 @@ class TelloEngine(object):
 
 	def pose_eval(self, frame):
 		"""Call to pose detection"""
-		if not self.use_gesture_control:
-			return
 
-		# Our target is the person whose index is 0 in pose_kps
 		self.tracker.target = None
 		self.pose = None
 		height, width, _ = frame.shape
@@ -173,12 +173,7 @@ class TelloEngine(object):
 			# We found a body, so we can cancel the exploring 360
 			self.rotation_to_consume = 0
 
-			check = PoseChecker(self)
-			self.pose = check.get_pose(frame)
-
-			if self.pose:
-				pose_command = PoseCommandRunner(self, log, proximity)
-				pose_command.run(self.pose)
+			self.eval_pose_command(frame, proximity)
 
 			self.tracker.get_best_body_position(self, width, height)
 
@@ -187,6 +182,16 @@ class TelloEngine(object):
 				self.tracker.track_target(self, frame)
 			else:
 				self.tracker.find_target(self)
+
+	def eval_pose_command(self, frame, proximity):
+		if not self.use_gesture_control:
+			return
+
+		check = PoseChecker(self)
+		self.pose = check.get_pose(frame)
+		if self.pose:
+			pose_command = PoseCommandRunner(self, log, proximity)
+			pose_command.run(self.pose)
 
 	def morse_eval(self, frame):
 		"""We are not flying, we check a potential morse code"""
@@ -254,9 +259,11 @@ class TelloEngine(object):
 		"""Enable | Disable control by gesture"""
 
 		self.use_gesture_control = not self.use_gesture_control
+
 		if not self.use_gesture_control:
-			self.toggle_tracking(tracking=False)
-		log.info('OPENPOSE ' + ("ON" if self.use_gesture_control else "OFF"))
+			self.sound_player.play("gesture-disabled")
+		else:
+			self.sound_player.play("gesture-enabled")
 
 	def toggle_tracking(self, tracking=None):
 		"""
@@ -267,18 +274,19 @@ class TelloEngine(object):
 			return
 
 		self.toggle_tracking_timestamp = time.time()
-		if self.tracking != tracking:
-			self.sound_player.play("tracking")
+
+		if self.tracking != tracking and not self.tracking:
+			self.sound_player.play("tracking-enabled")
+
+		if self.tracking != tracking and self.tracking:
+			self.sound_player.play("tracking-disabled")
 
 		if tracking is None:
 			self.tracking = not self.tracking
 		else:
 			self.tracking = tracking
+
 		if self.tracking:
-			log.info("ACTIVATE TRACKING")
-			self.sound_player.play()
-			# Needs openpose
-			self.use_gesture_control = True
 			# Start an explarotary 360
 			# self.clockwise_degrees(360)
 			# Init a PID controller for the rotation and one for the throttle
