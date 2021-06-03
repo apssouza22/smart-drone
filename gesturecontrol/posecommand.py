@@ -16,16 +16,6 @@ class PoseCommandRunner:
 			command(self.tello, self.log)
 
 	@staticmethod
-	def take_picture(tello, log):
-		# We trigger the associated action
-		log.info(f"pose detected : {tello.pose}")
-		# Take a picture in 1 second
-		if tello.timestamp_take_picture is None:
-			log.info("Take a picture in 1 second")
-			tello.timestamp_take_picture = time.time()
-			tello.sound_player.play("taking picture")
-
-	@staticmethod
 	def go_left(tello, log):
 		log.info("GOING LEFT from pose")
 		tello.axis_speed["right-left"] = tello.def_speed["right-left"]
@@ -55,7 +45,6 @@ class PoseCommandRunner:
 				tello.timestamp_keep_distance = time.time()
 				log.info(f"KEEP DISTANCE {tello.keep_distance}")
 				tello.pid_pitch = PID(0.5, 0.04, 0.3, setpoint=0, output_limits=(-50, 50))
-				# tello.graph_distance = RollingGraph(window_name="Distance", y_max=500, threshold=tello.keep_distance, waitKey=False)
 				tello.sound_player.play("keeping distance")
 		else:
 			if time.time() - tello.timestamp_keep_distance > tello.toggle_action_interval:
@@ -67,6 +56,7 @@ class PoseCommandRunner:
 	def palm_land(self, tello, log):
 		# Get close to the body then palm landing
 		if not tello.palm_landing_approach:
+			tello.use_gesture_control = False
 			tello.palm_landing_approach = True
 			tello.keep_distance = self.proximity
 			tello.timestamp_keep_distance = time.time()
@@ -93,16 +83,21 @@ class PoseCommandRunner:
 		log.info("TRACKING TOGGLE on pose")
 		tello.toggle_tracking()
 
+	@staticmethod
+	def taking_picture(tello, log):
+		tello.take_picture()
+
 	def get_commands(self):
 		return {
 			"RIGHT_HAND_FINGERS_UP_0": self.land,
 			"RIGHT_HAND_FINGERS_UP_1": self.go_left,
 			"RIGHT_HAND_FINGERS_UP_2": self.go_right,
-			# "RIGHT_HAND_FINGERS_UP_5": self.palm_land,
 			"RIGHT_HAND_FINGERS_UP_4": self.lock_dist,
 			"LEFT_HAND_FINGERS_UP_0": self.toggle_tracking,
 			"LEFT_HAND_FINGERS_UP_1": self.go_forward,
 			"LEFT_HAND_FINGERS_UP_2": self.go_back,
+			"BOTH_HAND_FINGERS_UP_1": self.taking_picture,
+			"BOTH_HAND_FINGERS_UP_0": self.palm_land,
 
 			# Commands disabled at the moment
 			# "HANDS_ON_NECK": self.take_picture,

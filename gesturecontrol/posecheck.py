@@ -65,6 +65,16 @@ class PoseChecker(object):
 		"""
 		left_hand_up = self.neck and self.l_wrist and self.l_wrist[1] < self.neck[1]
 		right_hand_up = self.neck and self.r_wrist and self.r_wrist[1] < self.neck[1]
+
+		if right_hand_up and left_hand_up:
+			pose = self.get_both_arms_pose()
+			if pose:
+				return pose
+
+			pose = self.get_both_hands_pose(self.tello)
+			if pose:
+				return pose
+
 		if right_hand_up and not left_hand_up:
 			shoulder_wrist_angle_right = vertical_angle(frame, self.r_shoulder, self.r_elbow, self.r_wrist, True)
 			pose = self.get_right_arm_pose(self.tello, shoulder_wrist_angle_right)
@@ -72,11 +82,6 @@ class PoseChecker(object):
 				return pose
 
 			pose = self.get_right_hand_pose(self.tello)
-			if pose:
-				return pose
-
-		if right_hand_up and left_hand_up:
-			pose = self.get_both_arms_pose()
 			if pose:
 				return pose
 
@@ -166,7 +171,7 @@ class PoseChecker(object):
 		if len(tello.op.right_hand_kps) == 0:
 			return None
 
-		fingers = self.get_finger_counts(tello.op.right_hand_kps,True)
+		fingers = self.get_finger_counts(tello.op.right_hand_kps, True)
 		return "RIGHT_HAND_FINGERS_UP_{}".format(fingers)
 
 	@staticmethod
@@ -192,3 +197,14 @@ class PoseChecker(object):
 			else:
 				fingers.append(0)
 		return fingers.count(1)
+
+	def get_both_hands_pose(self, tello):
+		if len(tello.op.right_hand_kps) == 0:
+			return None
+
+		fingers_right = self.get_finger_counts(tello.op.right_hand_kps, True)
+		fingers_left = self.get_finger_counts(tello.op.left_hand_kps, False)
+		if fingers_right != fingers_left:
+			return None
+
+		return "BOTH_HAND_FINGERS_UP_{}".format(fingers_right)

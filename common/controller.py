@@ -231,12 +231,17 @@ class TelloEngine(object):
 			int(self.axis_speed["rotation"])
 		)
 
-	def take_picture(self, frame):
+	def take_picture(self, frame=None):
 		"""
 			Tell drone to take picture, image sent to file handler
 		"""
+		if frame is None:
+			self.timestamp_take_picture = time.time()
+			self.sound_player.play("taking picture")
+			return
 
-	# TODO implement take picture
+		frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+		cv2.imwrite("assets/pictures/picture.jpg", frame)
 
 	def palm_land(self):
 		"""
