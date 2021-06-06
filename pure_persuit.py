@@ -8,10 +8,10 @@ import math
 import matplotlib.pyplot as plt
 
 # Parameters
-look_foward_gain = 0.1  # look forward gain
 look_ahead_distance = 2.0  # [m] look-ahead distance
+look_foward_gain = 0.1  # look forward gain
 proportional_speed = 1.0  # speed proportional gain
-interval = 0.1  # [s] time tick
+time_interval = 0.1  # [s] time tick
 angle_base = 2.9  # [m] wheel base of vehicle
 
 show_animation = True
@@ -28,10 +28,10 @@ class Robot:
 		self.y_and_yaw = self.y - ((angle_base / 2) * math.sin(self.yaw))
 
 	def update(self, speed, distance):
-		self.x += self.velocity * math.cos(self.yaw) * interval
-		self.y += self.velocity * math.sin(self.yaw) * interval
-		self.yaw += self.velocity / angle_base * math.tan(distance) * interval
-		self.velocity += speed * interval
+		self.x += self.velocity * math.cos(self.yaw) * time_interval
+		self.y += self.velocity * math.sin(self.yaw) * time_interval
+		self.yaw += self.velocity / angle_base * math.tan(distance) * time_interval
+		self.velocity += speed * time_interval
 		self.x_and_yaw = self.x - ((angle_base / 2) * math.cos(self.yaw))
 		self.y_and_yaw = self.y - ((angle_base / 2) * math.sin(self.yaw))
 
@@ -64,15 +64,26 @@ def proportional_control(target_speed, robot_pos_x):
 	return time_distance
 
 
-class TargetCourse:
+class TargetPath:
 
 	def __init__(self, cx, cy):
 		self.cx = cx
 		self.cy = cy
 		self.old_nearest_point_index = None
 
-	def search_target_index(self, robot):
+	def get_next_point_index(self, robot):
+		ind = self.get_nearest_point_index(robot)
+		next_point_distance = (look_foward_gain * robot.velocity) + look_ahead_distance
 
+		# search look ahead target point index
+		while next_point_distance > robot.calc_distance(self.cx[ind], self.cy[ind]):
+			if (ind + 1) >= len(self.cx):
+				break  # not exceed goal
+			ind += 1
+
+		return ind, next_point_distance
+
+	def get_nearest_point_index(self, robot):
 		# To speed up nearest point search, doing it at only first time.
 		if self.old_nearest_point_index is None:
 			# search nearest point index
@@ -81,46 +92,41 @@ class TargetCourse:
 			d = np.hypot(dx, dy)
 			ind = np.argmin(d)
 			self.old_nearest_point_index = ind
-		else:
-			ind = self.old_nearest_point_index
-			distance_this_index = robot.calc_distance(self.cx[ind], self.cy[ind])
-			while True:
-				distance_next_index = robot.calc_distance(self.cx[ind + 1], self.cy[ind + 1])
-				if distance_this_index < distance_next_index:
-					break
-				ind = ind + 1 if (ind + 1) < len(self.cx) else ind
-				distance_this_index = distance_next_index
-			self.old_nearest_point_index = ind
+			return ind
 
-		next_position = look_foward_gain * robot.velocity + look_ahead_distance  # update look ahead distance
+		ind = self.old_nearest_point_index
+		distance_old_point = robot.calc_distance(self.cx[ind], self.cy[ind])
+		ind = self.search_nearest_point(distance_old_point, ind, robot)
+		self.old_nearest_point_index = ind
 
-		# search look ahead target point index
-		while next_position > robot.calc_distance(self.cx[ind], self.cy[ind]):
-			if (ind + 1) >= len(self.cx):
-				break  # not exceed goal
-			ind += 1
+		return ind
 
-		return ind, next_position
+	def search_nearest_point(self, distance_old_point, ind, robot):
+		while True:
+			distance_next_index = robot.calc_distance(self.cx[ind + 1], self.cy[ind + 1])
+			if distance_old_point < distance_next_index:
+				break
+
+			ind = ind + 1 if (ind + 1) < len(self.cx) else ind
+			distance_old_point = distance_next_index
+		return ind
 
 
-def pure_pursuit_steer_control(robot, target_path, path_index):
-	next_path_index, next_position = target_path.search_target_index(robot)
+def get_steer_control(robot, tx, ty, next_point_distance):
+	angle = math.atan2(ty - robot.y_and_yaw, tx - robot.x_and_yaw) - robot.yaw
+	steer = math.atan2(2.0 * angle_base * math.sin(angle) / next_point_distance, 1.0)
+	return steer
 
+
+def get_next_point(path_index, next_path_index, target_path):
 	if path_index >= next_path_index:
 		next_path_index = path_index
-
-	if next_path_index < len(target_path.cx):
-		tx = target_path.cx[next_path_index]
-		ty = target_path.cy[next_path_index]
-	else:  # toward goal
-		tx = target_path.cx[-1]
-		ty = target_path.cy[-1]
+	if next_path_index >= len(target_path.cx):
 		next_path_index = len(target_path.cx) - 1
 
-	alpha = math.atan2(ty - robot.y_and_yaw, tx - robot.x_and_yaw) - robot.yaw
-	distance = math.atan2(2.0 * angle_base * math.sin(alpha) / next_position, 1.0)
-
-	return distance, next_path_index
+	tx = target_path.cx[next_path_index]
+	ty = target_path.cy[next_path_index]
+	return tx, ty, next_path_index
 
 
 def plot_arrow(x, y, yaw, length=1.0, width=0.5, fc="r", ec="k"):
@@ -144,27 +150,28 @@ def main():
 
 	target_speed = 10.0 / 3.6  # [m/s]
 
-	T = 100.0  # max simulation time
+	max_time = 100.0  # max simulation time
 
 	# initial state
 	robot = Robot(x=-0.0, y=-10.0, yaw=0.0, v=0.0)
 
-	lastIndex = len(cx) - 1
+	last_index = len(cx) - 1
 	time = 0.0
 	states = States()
 	states.append(time, robot)
-	target_path = TargetCourse(cx, cy)
-	target_ind, _ = target_path.search_target_index(robot)
+	target_path = TargetPath(cx, cy)
+	target_ind, _ = target_path.get_next_point_index(robot)
 
-	while T >= time and lastIndex > target_ind:
-
-		# Calc control input
+	while max_time >= time and last_index > target_ind:
 		speed = proportional_control(target_speed, robot.velocity)
-		distance, target_ind = pure_pursuit_steer_control(robot, target_path, target_ind)
+		next_point_index, next_point_distance = target_path.get_next_point_index(robot)
+		tx, ty, target_ind = get_next_point(target_ind, next_point_index, target_path)
 
-		robot.update(speed, distance)  # Control vehicle
+		steer = get_steer_control(robot, tx, ty, next_point_distance)
 
-		time += interval
+		robot.update(speed, steer)  # Control vehicle
+
+		time += time_interval
 		states.append(time, robot)
 
 		if show_animation:  # pragma: no cover
@@ -185,7 +192,7 @@ def main():
 			plt.pause(0.001)
 
 	# Test
-	assert lastIndex >= target_ind, "Cannot goal"
+	assert last_index >= target_ind, "Cannot goal"
 
 	if show_animation:  # pragma: no cover
 		plt.cla()
