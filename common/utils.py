@@ -1,7 +1,7 @@
 import math
 
 
-def get_dist_btw_pos(pos0, pos1):
+def get_distance(pos0, pos1):
 	"""
 	Get distance between 2 position.
 	"""

@@ -2,7 +2,7 @@ import pygame
 import json
 import math
 
-from common.utils import get_dist_btw_pos
+from common.utils import get_distance
 
 
 def save_path_plan(path_wp):
@@ -13,28 +13,23 @@ def save_path_plan(path_wp):
 	path_dist_cm = []
 	path_dist_px = []
 	path_angle = []
-	path_angle_dir = []
 
 	for index in range(len(path_wp)):
 		# Skip the first and second index.
 		if index > 0:
-			dist_px = get_dist_btw_pos(path_wp[index - 1], path_wp[index])
+			dist_px = get_distance(path_wp[index - 1], path_wp[index])
 			dist_cm = dist_px * MAP_SIZE_COEFF
 			path_dist_cm.append(dist_cm)
 			path_dist_px.append(dist_px)
 
 		if index == 0:
 			path_angle.append(0)
-			path_angle_dir.append("right")
 
 		# Skip the first and last index.
 		if index > 0 and index < (len(path_wp) - 1):
 			angle = get_angle_btw_line(path_wp[index - 1], path_wp[index], path_wp[index + 1])
 			# workaround for an issue when calculating angle direction on pathcontroller when angle is not divisible for 5
 			angle = math.ceil(angle / 5) * 5
-			angle_dir = get_angle_direction(path_wp[index - 1], path_wp[index + 1])
-			# path_angle_dir.append(angle_dir)
-			path_angle_dir.append("right")
 			path_angle.append(angle)
 
 	"""
@@ -46,7 +41,6 @@ def save_path_plan(path_wp):
 			"dist_cm": path_dist_cm[index],
 			"dist_px": path_dist_px[index],
 			"angle_deg": path_angle[index],
-			"angle_dir": path_angle_dir[index]
 		})
 
 	# Save to JSON file.
@@ -56,22 +50,6 @@ def save_path_plan(path_wp):
 		"pos": path_wp
 	}, f, indent=4)
 	f.close()
-
-
-def get_angle_direction(pos0, pos2):
-	## Fix this using something like https://stackoverflow.com/questions/31630946/get-angle-between-two-2d-lines-with-respect-to-the-direction-of-the-lines
-	x0, y0 = pos0[0], pos0[1]
-	x1, y1 = pos2[0], pos2[1]
-	if x0 < x1:
-		if y0 < y1:
-			return "right"
-		else:
-			return "left"
-
-	if y0 < y1:
-		return "right"
-	return "left"
-
 
 def get_angle_btw_line(pos0, pos1, pos2):
 	"""

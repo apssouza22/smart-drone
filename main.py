@@ -58,4 +58,4 @@ def main(drone_camera=True, log_level=None):
 
 
 if __name__ == '__main__':
-	main(True, None)
+	main(False, None)

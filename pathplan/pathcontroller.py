@@ -6,7 +6,7 @@ import time
 import cv2
 import numpy as np
 
-from common.utils import get_dist_btw_pos
+from common.utils import get_distance
 
 
 class PathController:
@@ -25,7 +25,7 @@ class PathController:
 	loaded_plan = {}
 
 	def __init__(self):
-		self.delete_path_plan_file()
+		# self.delete_path_plan_file()
 		pass
 
 	def read_path_plan(self):
@@ -65,21 +65,16 @@ class PathController:
 
 	def get_angle(self):
 		angle = int(self.wp[self.current_point]["angle_deg"])
-		if self.wp[self.current_point]["angle_dir"] == "left":
-			angle = -angle
-		return angle
+		distance_px = self.wp[self.current_point]["dist_px"]
+		guess_x = self.x + int(distance_px * math.cos(math.radians(self.angle + angle)))
+		guess_y = self.y + int(distance_px * math.sin(math.radians(self.angle + angle)))
 
-	def fix_angle(self, angle):
-		return math.ceil(angle / 5) * 5
+		x, y = self.loaded_plan['pos'][self.current_point + 1]
+		distance_guess = get_distance((x, y), (guess_x, guess_y))
+		if distance_guess < distance_px:
+			return angle
 
-	def get_next_angle(self):
-		if len(self.wp) <= self.current_point + 1:
-			return
-
-		angle = int(self.wp[self.current_point + 1]["angle_deg"])
-		if self.wp[self.current_point + 1]["angle_dir"] == "left":
-			angle = -angle
-		return angle
+		return -angle
 
 	def draw_way_points(self, img=None):
 		if img is None:
@@ -93,7 +88,7 @@ class PathController:
 		if self.current_point < 0:
 			return True
 
-		dist = get_dist_btw_pos((x, y), (self.x, self.y))
+		dist = get_distance((x, y), (self.x, self.y))
 
 		if dist < 10:
 			self.rotating = True
