@@ -4,6 +4,7 @@ import time
 import numpy
 import pygame
 
+from common.drone import Drone
 from pathplan.pathplanning import save_path_plan
 
 
@@ -61,7 +62,7 @@ class PyGameScreen:
 		pos = pygame.mouse.get_pos()
 		self.path_wp.append(pos)
 		if self.index > 0:
-			pygame.draw.line(self.screen, (255, 0, 0), self.path_wp[self.index-1], pos, 2)
+			pygame.draw.line(self.screen, (255, 0, 0), self.path_wp[self.index - 1], pos, 2)
 		self.index += 1
 		pygame.display.update()
 
@@ -78,7 +79,6 @@ class PyGameScreen:
 		self.plan_map_opened = False
 		img = numpy.zeros((1000, 800, 3), numpy.uint8)
 		self.load_background(img)
-
 
 
 def get_keys_control(tello):
@@ -113,21 +113,18 @@ def get_keys_control(tello):
 		pygame.K_RIGHT: lambda: tello.set_speed("rotation", 1.5 * tello.def_speed["rotation"]),
 		pygame.K_UP: lambda: tello.set_speed("up-down", tello.def_speed["up-down"]),
 		pygame.K_DOWN: lambda: tello.set_speed("up-down", -tello.def_speed["up-down"]),
-		pygame.K_TAB: lambda: takeoff(tello),
-		pygame.K_BACKSPACE: lambda: tello.drone_sdk.land(),
+		pygame.K_TAB: lambda: take_off(tello.drone),
+		pygame.K_BACKSPACE: lambda: tello.drone.land(),
 		pygame.K_KP_ENTER: lambda: tello.take_picture(),
 	}
 	return controls_key_pressed, controls_key_release
 
 
-def takeoff(tello):
+def take_off(drone: Drone):
 	time.sleep(2)
-	tello.is_flying = True
-	tello.axis_speed["up-down"] = 30
-	return tello.drone_sdk.takeoff()
+	return drone.takeoff()
 
 
 def key_quit(tello):
 	tello.toggle_tracking(False)
-	tello.drone_sdk.land()
-	tello.is_flying = False
+	tello.drone.land()

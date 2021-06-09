@@ -66,17 +66,11 @@ class PoseCommandRunner:
 
 	@staticmethod
 	def land(tello, log):
-		if time.time() - tello.toggle_tracking_timestamp < tello.toggle_action_interval:
-			return
-
-		tello.toggle_tracking_timestamp = time.time()
-
 		if not tello.palm_landing:
 			log.info("LANDING on pose")
 			tello.toggle_tracking(tracking=False)
-			tello.drone_sdk.land()
 			tello.sound_player.play("landing")
-			tello.is_flying = False
+			tello.drone.land()
 
 	@staticmethod
 	def toggle_tracking(tello, log):

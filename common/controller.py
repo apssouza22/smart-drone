@@ -13,6 +13,7 @@ from djitellopy import tello as drone
 from simple_pid import PID
 
 from common.cameramorse import CameraMorse
+from common.drone import Drone
 from common.pygamescreen import PyGameScreen
 from common.soundplayer import SoundPlayer, Tone
 from gesturecontrol.posecheck import PoseChecker
@@ -31,13 +32,13 @@ class TelloEngine(object):
 
 	def __init__(
 			self,
+			drone: Drone,
 			log_level=None
 	):
 		self.toggle_action_interval = 2  # buffer in seconds for toggle actions
 		self.pose = None
 		self.log_level = log_level
-		self.is_flying = False
-		self.drone_sdk = drone.Tello()
+		self.drone = drone
 		self.axis_speed = {"rotation": 0, "right-left": 0, "forward-back": 0, "up-down": 0}
 		self.cmd_axis_speed = {"rotation": 0, "right-left": 0, "forward-back": 0, "up-down": 0}
 		self.prev_axis_speed = self.axis_speed.copy()
@@ -47,23 +48,22 @@ class TelloEngine(object):
 		self.tracking_after_takeoff = False
 		self.tracking = False
 		self.keep_distance = None
-		self.palm_landing = False
-		self.palm_landing_approach = False
 		self.rotation_to_consume = 0
 		self.timestamp_keep_distance = time.time()
 		self.timestamp_take_picture = None
+		self.palm_landing = False
+		self.palm_landing_approach = False
 		self.throw_ongoing = False
 		self.scheduled_takeoff = None
 		self.timestamp_no_body = time.time()
 		self.rotation_to_consume = 0
 		self.set_logging(log_level)
-		self.init_drone()
 		self.init_sounds()
 		self.start_time = time.time()
 		self.use_gesture_control = False
 		self.is_pressed = False
-		self.battery = self.drone_sdk.get_battery()
-		self.op = PoseDetectorWrapper()
+		self.battery = self.drone.get_battery()
+		self.pose_detector = PoseDetectorWrapper()
 		self.morse = CameraMorse(display=False)
 		self.morse.define_command("-", self.delayed_takeoff)
 		self.tracker = PersonTracker(log)
@@ -93,12 +93,6 @@ class TelloEngine(object):
 			ch.setFormatter(logging.Formatter(fmt='%(asctime)s.%(msecs)03d - %(name)s - %(levelname)s - %(message)s', datefmt="%H:%M:%S"))
 			log.addHandler(ch)
 
-	def init_drone(self):
-		"""
-			Connect to the drone, start streaming camera
-		"""
-		self.drone_sdk.connect()
-		self.drone_sdk.streamon()
 
 	def init_sounds(self):
 		"""Initiate the sound feedback"""
@@ -148,16 +142,14 @@ class TelloEngine(object):
 		# Is there a scheduled takeoff ?
 		if self.scheduled_takeoff and time.time() > self.scheduled_takeoff:
 			self.scheduled_takeoff = None
-			self.drone_sdk.takeoff()
-			self.is_flying = True
+			self.drone.takeoff()
 			self.axis_speed["up-down"] = 30
 
 	def handle_drone_path(self):
 		"""handle the drone path drawing and drone path planning"""
-		self.axis_speed = self.path_manager.handle(self.axis_speed, self.is_flying)
-		if self.path_manager.path_planning.done and self.is_flying:
-			self.drone_sdk.land()
-			self.is_flying = False
+		self.axis_speed = self.path_manager.handle(self.axis_speed, self.drone.is_flying)
+		if self.path_manager.path_planning.done and self.drone.is_flying:
+			self.drone.land()
 
 	def pose_eval(self, frame):
 		"""Call to pose detection"""
@@ -166,10 +158,10 @@ class TelloEngine(object):
 		self.pose = None
 		height, width, _ = frame.shape
 		proximity = int(width / 2.6)
-		self.op.eval(frame)
+		self.pose_detector.eval(frame)
 
-		if len(self.op.pose_kps) > 0:
-			self.op.draw_body(frame)
+		if len(self.pose_detector.pose_kps) > 0:
+			self.pose_detector.draw_body(frame)
 			# We found a body, so we can cancel the exploring 360
 			self.rotation_to_consume = 0
 
@@ -195,7 +187,7 @@ class TelloEngine(object):
 
 	def morse_eval(self, frame):
 		"""We are not flying, we check a potential morse code"""
-		if not self.is_flying:
+		if not self.drone.is_flying:
 			pressing, detected = self.morse.eval(frame)
 			if self.is_pressed and not pressing:
 				self.tone.off()
@@ -224,7 +216,7 @@ class TelloEngine(object):
 				# This line is necessary to display current values in 'self.write_hud'
 				self.axis_speed[axis] = self.prev_axis_speed[axis]
 
-		self.drone_sdk.send_rc_control(
+		self.drone.update(
 			int(self.axis_speed["right-left"]),
 			int(self.axis_speed["forward-back"]),
 			int(self.axis_speed["up-down"]),
@@ -249,7 +241,7 @@ class TelloEngine(object):
 		"""
 		self.palm_landing = True
 		self.sound_player.play("palm landing")
-		self.drone_sdk.palm_land()
+		self.drone.land()
 
 	def delayed_takeoff(self, delay=5):
 		self.scheduled_takeoff = time.time() + delay

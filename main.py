@@ -4,6 +4,7 @@ Smart drone
 import cv2
 
 from common.controller import TelloEngine
+from common.drone import Drone
 from common.fps import FPS
 from common.info import InfoDisplayer
 
@@ -24,21 +25,15 @@ def skip_frame():
 	return False
 
 
-def get_frame(drone_camera, tello):
-	if drone_camera:
-		return lambda: tello.drone_sdk.get_frame_read().frame
-
-	cap = cv2.VideoCapture(0)
-	return lambda: cap.read()[1]
-
-
-def main(drone_camera=True, log_level=None):
+def main(mock_drone=True, log_level=None):
 	"""
 		Main function
-		drone_camera = False will use your computer camera. Useful for development
+		mock_drone = False will use your computer camera. Useful for development
 	"""
-	engine = TelloEngine(log_level=log_level)
-	read_frame_fn = get_frame(drone_camera, engine)
+	drone = Drone(mock_drone)
+	drone.start()
+
+	engine = TelloEngine(drone, log_level=log_level)
 	fps = FPS()
 	info = InfoDisplayer()
 
@@ -46,7 +41,7 @@ def main(drone_camera=True, log_level=None):
 		if skip_frame():
 			continue
 		engine.pygame_screen.watch_events()
-		frame = read_frame_fn()
+		frame = drone.get_frame()
 		frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 		frame = cv2.resize(frame, (640, 480))
 		frame = engine.process(frame)
@@ -58,4 +53,4 @@ def main(drone_camera=True, log_level=None):
 
 
 if __name__ == '__main__':
-	main(False, None)
+	main(True, None)

@@ -150,28 +150,28 @@ class PoseChecker(object):
 		return None
 
 	def load_limbs(self, tello):
-		self.neck = tello.op.get_body_kp("neck")
-		self.r_wrist = tello.op.get_body_kp("right_wrist")
-		self.l_wrist = tello.op.get_body_kp("left_wrist")
-		self.r_elbow = tello.op.get_body_kp("right_elbow")
-		self.l_elbow = tello.op.get_body_kp("left_elbow")
-		self.r_shoulder = tello.op.get_body_kp("right_shoulder")
-		self.l_shoulder = tello.op.get_body_kp("left_shoulder")
-		self.r_ear = tello.op.get_body_kp("right_ear")
-		self.l_ear = tello.op.get_body_kp("left_ear")
+		self.neck = tello.pose_detector.get_body_kp("neck")
+		self.r_wrist = tello.pose_detector.get_body_kp("right_wrist")
+		self.l_wrist = tello.pose_detector.get_body_kp("left_wrist")
+		self.r_elbow = tello.pose_detector.get_body_kp("right_elbow")
+		self.l_elbow = tello.pose_detector.get_body_kp("left_elbow")
+		self.r_shoulder = tello.pose_detector.get_body_kp("right_shoulder")
+		self.l_shoulder = tello.pose_detector.get_body_kp("left_shoulder")
+		self.r_ear = tello.pose_detector.get_body_kp("right_ear")
+		self.l_ear = tello.pose_detector.get_body_kp("left_ear")
 
 	def get_left_hand_pose(self, tello):
-		if len(tello.op.left_hand_kps) == 0:
+		if len(tello.pose_detector.left_hand_kps) == 0:
 			return None
 
-		fingers = self.get_finger_counts(tello.op.left_hand_kps)
+		fingers = self.get_finger_counts(tello.pose_detector.left_hand_kps)
 		return "LEFT_HAND_FINGERS_UP_{}".format(fingers)
 
 	def get_right_hand_pose(self, tello):
-		if len(tello.op.right_hand_kps) == 0:
+		if len(tello.pose_detector.right_hand_kps) == 0:
 			return None
 
-		fingers = self.get_finger_counts(tello.op.right_hand_kps, True)
+		fingers = self.get_finger_counts(tello.pose_detector.right_hand_kps, True)
 		return "RIGHT_HAND_FINGERS_UP_{}".format(fingers)
 
 	@staticmethod
@@ -199,11 +199,11 @@ class PoseChecker(object):
 		return fingers.count(1)
 
 	def get_both_hands_pose(self, tello):
-		if len(tello.op.right_hand_kps) == 0:
+		if len(tello.pose_detector.right_hand_kps) == 0:
 			return None
 
-		fingers_right = self.get_finger_counts(tello.op.right_hand_kps, True)
-		fingers_left = self.get_finger_counts(tello.op.left_hand_kps, False)
+		fingers_right = self.get_finger_counts(tello.pose_detector.right_hand_kps, True)
+		fingers_left = self.get_finger_counts(tello.pose_detector.left_hand_kps, False)
 		if fingers_right != fingers_left:
 			return None
 

@@ -51,7 +51,8 @@ class PersonTracker:
 		self.last_rotation_is_cw = tello.axis_speed["rotation"] > 0
 		tello.axis_speed["up-down"] = int(-tello.pid_throttle(yoff))
 		self.log.debug(f"yoff: {yoff} - speed_throttle: {tello.axis_speed['up-down']}")
-		# If in locke distance mode
+
+		# If in lock distance mode
 		if tello.keep_distance and tello.shoulders_width:
 			if tello.palm_landing_approach and tello.shoulders_width > tello.keep_distance:
 				# The drone is now close enough to the body
@@ -68,19 +69,19 @@ class PersonTracker:
 		# In tracking mode, we track a specific body part (an openpose keypoint):
 		# the nose if visible, otherwise the neck, otherwise the midhip
 		# The tracker tries to align that body part with the reference point (ref_x, ref_y)
-		self.target = tello.op.get_body_kp("nose")
+		self.target = tello.pose_detector.get_body_kp("nose")
 		if self.target is not None:
 			self.ref_x = int(w / 2)
 			self.ref_y = int(h * 0.35)
 			return
 
-		self.target = tello.op.get_body_kp("neck")
+		self.target = tello.pose_detector.get_body_kp("neck")
 		if self.target is not None:
 			self.ref_x = int(w / 2)
 			self.ref_y = int(h / 2)
 			return
 
-		self.target = tello.op.get_body_kp("mid_hip")
+		self.target = tello.pose_detector.get_body_kp("mid_hip")
 		if self.target is not None:
 			self.ref_x = int(w / 2)
 			self.ref_y = int(0.75 * h)

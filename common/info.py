@@ -29,7 +29,7 @@ class InfoDisplayer:
 		self.add(f"BAT {tello.battery}")
 		self.add(f"TRACKING {'ON' if tello.tracking else 'OFF'}", (0, 255, 0) if tello.tracking else (0, 0, 255))
 
-		if tello.is_flying:
+		if tello.drone.is_flying:
 			self.add("FLYING", (0, 255, 0))
 		else:
 			self.add("NOT FLYING", (0, 0, 255))
