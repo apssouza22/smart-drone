@@ -2,15 +2,17 @@ import time
 
 import cv2
 
+from common.drone import Drone
 from common.mapping import PathMapper
 from pathplan.pathcontroller import PathController
 
 
 class PathManager:
 
-	def __init__(self, pygame_screen):
+	def __init__(self, pygame_screen, drone: Drone):
+		self.drone = drone
 		self.pygame_screen = pygame_screen
-		self.path_mapper = PathMapper()
+		self.path_mapper = PathMapper(drone)
 		self.path_planning = PathController()
 		self.path_planning_enabled = False
 
@@ -27,13 +29,14 @@ class PathManager:
 	def path_plan(self, is_flying):
 		map_img = None
 		axis_speed = None
-
+		# is_flying = True
+		# self.path_planning_enabled= True
 		if not is_flying or not self.path_planning_enabled:
 			return map_img, axis_speed
 
 		if not self.path_planning.contain_path_plan:
 			self.path_planning.read_path_plan()
-			self.path_mapper.points = [(0, 0)]
+			self.drone.clean_position_history()
 			time.sleep(1)
 			return map_img, axis_speed
 
@@ -49,19 +52,16 @@ class PathManager:
 		return map_img, axis_speed
 
 	def handle_point_reached(self):
-		point_reached = self.path_planning.has_reached_point(self.path_mapper.x, self.path_mapper.y)
+		point_reached = self.path_planning.has_reached_point(self.drone.drone_locator.x, self.drone.drone_locator.y)
 		if point_reached:
-			self.path_mapper.x = self.path_planning.x
-			self.path_mapper.y = self.path_planning.y
+			self.drone.drone_locator.x = self.path_planning.x
+			self.drone.drone_locator.y = self.path_planning.y
 			self.path_planning.move()
-			self.path_mapper.angle_rotation = self.path_planning.angle
+			self.drone.drone_locator.accumulated_angle = self.path_planning.accumulated_angle
 
 	def handle_rotation(self):
 		if self.path_planning.rotating:
-			rotation_time = abs(self.path_planning.get_angle()) * 0.0133
+			rotation_time = abs(self.path_planning.angle) * 0.0133
 			print("Drone rotation. Waiting " + str(rotation_time) + " ...")
 			time.sleep(rotation_time)
 			self.path_planning.rotating = False
-
-	def watch(self, tello):
-		self.path_mapper.watch(tello)

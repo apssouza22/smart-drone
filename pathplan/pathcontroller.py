@@ -15,6 +15,7 @@ class PathController:
 	way_points = []
 	x = 0
 	y = 0
+	accumulated_angle = 0
 	angle = 0
 	rotating = False
 	drone_initial_angle = 0
@@ -42,7 +43,8 @@ class PathController:
 		if self.current_point >= len(self.wp):
 			self.done = True
 			return
-		self.angle += self.get_angle()
+		self.angle = self.get_angle()
+		self.accumulated_angle += self.angle
 		self.calculate_point()
 		self.way_points.append((self.x, self.y))
 
@@ -53,21 +55,21 @@ class PathController:
 			return {"rotation": 0, "right-left": 0, "forward-back": 35, "up-down": 0}
 
 		rotation_speed = 80
-		if self.get_angle() < 0:
+		if self.angle < 0:
 			rotation_speed = -80
 
 		return {"rotation": rotation_speed, "right-left": 0, "forward-back": 0, "up-down": 0}
 
 	def calculate_point(self):
 		distance_px = self.wp[self.current_point]["dist_px"]
-		self.x += int(distance_px * math.cos(math.radians(self.angle)))
-		self.y += int(distance_px * math.sin(math.radians(self.angle)))
+		self.x += int(distance_px * math.cos(math.radians(self.accumulated_angle)))
+		self.y += int(distance_px * math.sin(math.radians(self.accumulated_angle)))
 
 	def get_angle(self):
 		angle = int(self.wp[self.current_point]["angle_deg"])
 		distance_px = self.wp[self.current_point]["dist_px"]
-		guess_x = self.x + int(distance_px * math.cos(math.radians(self.angle + angle)))
-		guess_y = self.y + int(distance_px * math.sin(math.radians(self.angle + angle)))
+		guess_x = self.x + int(distance_px * math.cos(math.radians(self.accumulated_angle + angle)))
+		guess_y = self.y + int(distance_px * math.sin(math.radians(self.accumulated_angle + angle)))
 
 		x, y = self.loaded_plan['pos'][self.current_point + 1]
 		distance_guess = get_distance((x, y), (guess_x, guess_y))

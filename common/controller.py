@@ -70,8 +70,7 @@ class TelloEngine(object):
 		self.pygame_screen = PyGameScreen(self)
 		self.pygame_screen.add_listeners()
 
-		self.path_manager = PathManager(self.pygame_screen)
-		self.path_manager.watch(self)
+		self.path_manager = PathManager(self.pygame_screen, self.drone)
 
 	def open_path_panning(self):
 		""" Open the path planning screen for drawing the drone path"""
@@ -92,7 +91,6 @@ class TelloEngine(object):
 			ch.setLevel(log_level)
 			ch.setFormatter(logging.Formatter(fmt='%(asctime)s.%(msecs)03d - %(name)s - %(levelname)s - %(message)s', datefmt="%H:%M:%S"))
 			log.addHandler(ch)
-
 
 	def init_sounds(self):
 		"""Initiate the sound feedback"""
