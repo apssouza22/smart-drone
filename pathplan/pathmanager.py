@@ -58,6 +58,10 @@ class PathManager:
 			self.drone.drone_locator.y = self.path_planning.y
 			self.path_planning.move()
 			self.drone.drone_locator.accumulated_angle = self.path_planning.accumulated_angle
+			self.drone.drone_locator.angle_calc_disabled = True
+
+		if self.path_planning.done:
+			self.drone.drone_locator.angle_calc_disabled = False
 
 	def handle_rotation(self):
 		if self.path_planning.rotating:

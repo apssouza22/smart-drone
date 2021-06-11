@@ -64,7 +64,7 @@ class DroneLocator:
 	accumulated_angle = 0
 	points = [(0, 0), (0, 0)]
 	distance = 0
-	angle = 0
+	angle_calc_disabled = False
 	axis_speed = {"rotation": 0, "right-left": 0, "forward-back": 0, "up-down": 0}
 
 	def watch(self):
@@ -110,16 +110,17 @@ class DroneLocator:
 			distance = self.move_speed
 			direction = 180
 
-		# Rotation left
-		if self.axis_speed["rotation"] < 0:
-			self.accumulated_angle -= self.rotation_speed
+		if not self.angle_calc_disabled:
+			# Rotation left
+			if self.axis_speed["rotation"] < 0:
+				self.accumulated_angle -= self.rotation_speed
 
-		# Rotation right
-		if self.axis_speed["rotation"] > 0:
-			self.accumulated_angle += self.rotation_speed
+			# Rotation right
+			if self.axis_speed["rotation"] > 0:
+				self.accumulated_angle += self.rotation_speed
 
-		self.angle = direction + self.accumulated_angle
+		angle = direction + self.accumulated_angle
 
-		self.x += int(distance * math.cos(math.radians(self.angle)))
-		self.y += int(distance * math.sin(math.radians(self.angle)))
+		self.x += int(distance * math.cos(math.radians(angle)))
+		self.y += int(distance * math.sin(math.radians(angle)))
 

@@ -10,6 +10,8 @@ from common.utils import get_distance
 
 
 class PathController:
+	"Responsible to controle the drone based on loaded path plan"
+
 	wp = []
 	current_point = -1
 	way_points = []
@@ -18,10 +20,7 @@ class PathController:
 	accumulated_angle = 0
 	angle = 0
 	rotating = False
-	drone_initial_angle = 0
 	done = False
-	rotation_direction = None
-	adjust_rotation = 0
 	contain_path_plan = False
 	loaded_plan = {}
 
@@ -51,6 +50,7 @@ class PathController:
 	def get_command(self):
 		if self.done:
 			return {"rotation": 0, "right-left": 0, "forward-back": 0, "up-down": 0}
+
 		if not self.rotating:
 			return {"rotation": 0, "right-left": 0, "forward-back": 35, "up-down": 0}
 
@@ -72,6 +72,7 @@ class PathController:
 		guess_y = self.y + int(distance_px * math.sin(math.radians(self.accumulated_angle + angle)))
 
 		x, y = self.loaded_plan['pos'][self.current_point + 1]
+		# checking which direction is the angle
 		distance_guess = get_distance((x, y), (guess_x, guess_y))
 		if distance_guess < distance_px:
 			return angle

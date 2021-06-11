@@ -74,6 +74,7 @@ class TelloEngine(object):
 
 	def open_path_panning(self):
 		""" Open the path planning screen for drawing the drone path"""
+
 		self.path_manager.path_planning_enabled = True
 		self.pygame_screen.plan_map_opened = True
 		self.pygame_screen.load_background()
