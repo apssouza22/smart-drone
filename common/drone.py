@@ -35,19 +35,32 @@ class Drone:
 		return lambda: cap.read()[1]
 
 	def get_battery(self):
-		self.sdk.get_battery()
+		if not self.mock:
+			return self.sdk.get_battery()
+		return 100
+
+	def get_wifi_signal(self):
+		if not self.mock:
+			signal_noise_ratio = self.sdk.query_wifi_signal_noise_ratio()
+			print(signal_noise_ratio)
+			return signal_noise_ratio
+
 
 	def takeoff(self):
 		self.is_flying = True
-		self.sdk.takeoff()
+		if not self.mock:
+			self.sdk.takeoff()
+
 
 	def land(self):
 		self.is_flying = False
-		self.sdk.land()
+		if not self.mock and self.sdk.is_flying:
+			self.sdk.land()
 
 	def update(self, right_left, forward_back, up_down, rotation):
-		self.sdk.send_rc_control(right_left, forward_back, up_down, rotation)
 		self.drone_locator.update_axis(right_left, forward_back, up_down, rotation)
+		if not self.mock:
+			self.sdk.send_rc_control(right_left, forward_back, up_down, rotation)
 
 	def get_position_history(self):
 		return self.drone_locator.points

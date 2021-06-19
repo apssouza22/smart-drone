@@ -118,7 +118,7 @@ class TelloEngine(object):
 			Process event loop
 		"""
 		self.axis_speed = self.cmd_axis_speed.copy()
-
+		#self.drone.get_wifi_signal()
 		self.handle_takeoff()
 
 		# If we are on the point to take a picture, the tracking is temporarily desactivated (2s)

@@ -57,10 +57,11 @@ def main(mock_drone=True, enable_streaming=False, log_level=None):
 		engine.sound_player.play()
 		frame = info.display_info(engine, frame, fps)
 		frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-		video_source.update(frame)
+		if enable_streaming:
+			video_source.update(frame)
 		cv2.imshow('My image', frame)
 		cv2.waitKey(1)
 
 
 if __name__ == '__main__':
-	main(True, None)
+	main(True, True, None)

@@ -24,7 +24,7 @@ def set_cors(my_app, offer_route):
 	})
 
 
-def setup_server_runner(video: VideoSource, dummy=""):
+def setup_server_runner(video: VideoSource):
 	app = web.Application()
 	video_controller = VideoController(VideoImageTrack(video))
 	offer_route = app.router.add_post("/offer", video_controller.offer)
