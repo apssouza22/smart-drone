@@ -4,15 +4,17 @@ This project leverage from Machine learning/Computer vision to make a lower cost
 
 
 ## Features  
-[More](https://github.com/apssouza22/smartdrone/tree/master/gesturecontrol#smart-drone)
 - Control the drone by gestures
 - People tracking
 - People searching
 - Sound feedback
-- Morse commands using the camera
+- Morse commands using camera
 - Keyboard control
 - Drone path monitoring
 - Drone path planning
+- Video streaming using Webrtc
+- Remote control using websocket
+- HTML 5 joystick control
 
 
 -----
