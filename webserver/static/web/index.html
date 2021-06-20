@@ -20,50 +20,42 @@
 
     <base target="_blank">
 
-    <title>Peer connection</title>
-
-    <link rel="icon" sizes="192x192" href="../../../images/webrtc-icon-192x192.png">
+    <title>Smart drone</title>
     <link href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="main.css"/>
 
 </head>
 
-<body>
+<body class="noselect">
 
 <div id="container">
-    <h1><a href="//webrtc.github.io/samples/" title="WebRTC samples homepage">WebRTC samples</a>
-        <span>Peer connection</span></h1>
+    <h1>Smart drone remote operation</h1>
 
     <p>This sample shows how to setup a connection between two peers using
         <a href="https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection">RTCPeerConnection</a>.
     </p>
 
-    <video id="localVideo" playsinline autoplay muted></video>
     <video id="remoteVideo" playsinline autoplay></video>
-
     <div class="box">
-        <button id="startButton">Start</button>
         <button id="callButton">Call</button>
         <button id="hangupButton">Hang Up</button>
     </div>
-
-    <p>View the console to see logging. The <code>MediaStream</code> object <code>localStream</code>, and the <code>RTCPeerConnection</code>
-        objects <code>pc1</code> and <code>pc2</code> are in global scope, so you can inspect them in the console as
-        well.</p>
-
-    <p>For more information about RTCPeerConnection, see <a href="http://www.html5rocks.com/en/tutorials/webrtc/basics/"
-                                                            title="HTML5 Rocks article about WebRTC by Sam Dutton">Getting
-            Started With WebRTC</a>.</p>
-
-
-    <a href="https://github.com/webrtc/samples/tree/gh-pages/src/content/peerconnection/pc1"
-       title="View source for this page on GitHub" id="viewSource">View source on GitHub</a>
+    <div>
+        <div class="container space-top">
+            <h1 class="center blue-text thin">Drone Joystick</h1>
+            <canvas id="joystick-left" class="joystick" height="300" width="300"></canvas>
+            <canvas id="joystick-right" class="joystick" height="300" width="300"></canvas>
+        </div>
+    </div>
 
 </div>
 
 <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
-<script src="videoStream.js" async></script>
-<script src="main.js" async></script>
+<script src="https://code.createjs.com/createjs-2015.11.26.combined.js"></script>
+<script src="https://hammerjs.github.io/dist/hammer.js"></script>
 
+<script src="joystick.js"></script>
+<script src="webrtc.js"></script>
+<script src="main.js"></script>
 </body>
 </html>

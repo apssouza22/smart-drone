@@ -1,4 +1,5 @@
-var pc = null
+var pc = null;
+
 class VideoStream {
     negotiate() {
         pc.addTransceiver('video', {direction: 'recvonly'});
