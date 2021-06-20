@@ -1,61 +1,49 @@
 <!DOCTYPE html>
-<!--
- *  Copyright (c) 2015 The WebRTC project authors. All Rights Reserved.
- *
- *  Use of this source code is governed by a BSD-style license
- *  that can be found in the LICENSE file in the root of the source
- *  tree.
--->
 <html>
-<head>
+    <head>
 
-    <meta charset="utf-8">
-    <meta name="description" content="WebRTC code samples">
-    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
-    <meta itemprop="description" content="Client-side WebRTC code samples">
-    <meta itemprop="image" content="../../../images/webrtc-icon-192x192.png">
-    <meta itemprop="name" content="WebRTC code samples">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta id="theme-color" name="theme-color" content="#ffffff">
+        <meta charset="utf-8"/>
+        <meta name="description" content="WebRTC code samples"/>
+        <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1"/>
+        <meta itemprop="description" content="Client-side WebRTC code samples"/>
+        <meta itemprop="image" content="../../../images/webrtc-icon-192x192.png"/>
+        <meta itemprop="name" content="WebRTC code samples"/>
+        <meta name="mobile-web-app-capable" content="yes"/>
+        <meta id="theme-color" name="theme-color" content="#ffffff"/>
 
-    <base target="_blank">
+        <base target="_blank"/>
 
-    <title>Smart drone</title>
-    <link href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="main.css"/>
+        <title>Smart drone</title>
+        <link href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="main.css"/>
 
-</head>
+    </head>
 
-<body class="noselect">
+    <body class="noselect" onload="init()">
 
-<div id="container">
-    <h1>Smart drone remote operation</h1>
+        <div id="container">
+            <h1>Smart drone remote operation</h1>
+            <video id="remoteVideo" playsinline autoplay></video>
+            <div class="box">
+                <button id="callButton">Connect</button>
+                <button id="hangupButton">Disconnect</button>
+            </div>
+            <div>
+                <div class="container space-top">
+                    <h1 class="center blue-text thin">Drone Joystick</h1>
+                    <canvas id="joystick-left" class="joystick" height="300" width="300"></canvas>
+                    <canvas id="joystick-right" class="joystick" height="300" width="300"></canvas>
+                </div>
+            </div>
 
-    <p>This sample shows how to setup a connection between two peers using
-        <a href="https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection">RTCPeerConnection</a>.
-    </p>
-
-    <video id="remoteVideo" playsinline autoplay></video>
-    <div class="box">
-        <button id="callButton">Call</button>
-        <button id="hangupButton">Hang Up</button>
-    </div>
-    <div>
-        <div class="container space-top">
-            <h1 class="center blue-text thin">Drone Joystick</h1>
-            <canvas id="joystick-left" class="joystick" height="300" width="300"></canvas>
-            <canvas id="joystick-right" class="joystick" height="300" width="300"></canvas>
         </div>
-    </div>
 
-</div>
+        <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+        <script src="https://code.createjs.com/createjs-2015.11.26.combined.js"></script>
+        <script src="https://hammerjs.github.io/dist/hammer.js"></script>
 
-<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
-<script src="https://code.createjs.com/createjs-2015.11.26.combined.js"></script>
-<script src="https://hammerjs.github.io/dist/hammer.js"></script>
-
-<script src="joystick.js"></script>
-<script src="webrtc.js"></script>
-<script src="main.js"></script>
-</body>
+        <script src="joystick.js"></script>
+        <script src="webrtc.js"></script>
+        <script src="main.js"></script>
+    </body>
 </html>

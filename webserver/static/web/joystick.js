@@ -1,10 +1,8 @@
 function createHammerControl(psp, stage, myElement) {
     let xCenter = 0;
     let yCenter = 0;
-    // create a simple instance
-    // by default, it only adds horizontal recognizers
     var mc = new Hammer(myElement);
-
+    mc.add(new Hammer.Pan({ threshold: 0, pointers: 0 }));
     mc.on("panstart", function (ev) {
         xCenter = psp.x;
         yCenter = psp.y;
@@ -40,20 +38,15 @@ function init() {
 }
 
 function createJoystick(myElementId) {
-    // easal stuff goes hur
-    var xCenter = 150;
-    var yCenter = 150;
     var stage = new createjs.Stage(myElementId);
 
     var psp = new createjs.Shape();
-    psp.graphics.beginFill('#333333').drawCircle(xCenter, yCenter, 50);
+    psp.graphics.beginFill('#333333').drawCircle(150, 150, 50);
 
     psp.alpha = 0.25;
 
     var vertical = new createjs.Shape();
     var horizontal = new createjs.Shape();
-    vertical.graphics.beginFill('#ff4d4d').drawRect(150, 0, 2, 300);
-    horizontal.graphics.beginFill('#ff4d4d').drawRect(0, 150, 300, 2);
 
     stage.addChild(psp);
     stage.addChild(vertical);
