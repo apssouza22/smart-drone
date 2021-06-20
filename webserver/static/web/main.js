@@ -40,10 +40,22 @@ addListeners();
 async function call() {
     callButton.disabled = true;
     hangupButton.disabled = false;
-    console.log('Starting call');
+    console.log('Starting connect');
     startTime = window.performance.now();
     video.start()
+
+    let ws = new WebSocket("ws://"+window.location.host+"/ws");
+    ws.onmessage = handleSocketResponse;
+    ws.onopen = function(){
+        console.log("Connected to the web socket")
+    }
 }
+
+function handleSocketResponse(event) {
+    console.log(JSON.parse(event.data));
+}
+
+
 
 function hangup() {
     console.log('Ending call');
