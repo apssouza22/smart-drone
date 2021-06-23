@@ -1,8 +1,16 @@
+"""
+    My own layer above the official Openpose python wrapper : https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/modules/python_module.md
+    Tested only on ubuntu.
+    Modify MODEL_FOLDER to point to the directory where the models are installed
+"""
+
+import argparse
 from collections import namedtuple
 
 import cv2
 
 from common import posemodule as pm
+from common.fps import FPS
 
 body_kp_id_to_name = {
 	0: "nose",
@@ -95,9 +103,13 @@ pairs_body = pairs_head + pairs_upper_limbs + pairs_lower_limbs + pairs_spine + 
 
 
 class PoseDetectorWrapper:
-	"""A wrapper on top of MediaPipe pose detector model"""
 
 	def __init__(self):
+		"""
+        openpose_rendering : if True, rendering is made by original Openpose library. Otherwise rendering is to the
+        responsability of the user (~0.2 fps faster)
+        """
+
 		self.pose_detector = pm.PoseDetector()
 		self.pose_kps = []
 		self.left_hand_kps = []
@@ -110,22 +122,24 @@ class PoseDetectorWrapper:
 		self.right_hand_kps = self.pose_detector.find_right_hand_position(image, True)
 		self.pose_detector.draw_all(image)
 
-	def draw_body(self, frame):
+	def draw_body(self, frame, pairs=pairs_body, thickness=3, color=None):
 		"""Draw on 'frame' pairs of keypoints"""
-		self.draw_pairs_points(frame, body_kp_name_to_id, pairs_body)
+		self.draw_pairs_points(frame, self.pose_kps, body_kp_name_to_id, pairs, thickness, color)
 
-	def draw_pairs_points(self, frame, kp_name_to_id, pairs):
+	@staticmethod
+	def draw_pairs_points(frame, person, kp_name_to_id, pairs, thickness=3, color=None):
 		"""Draw on 'frame' pairs of keypoints"""
 
 		for pair in pairs:
-			pose1 = self.pose_kps[kp_name_to_id[pair.p1]]
-			pose2 = self.pose_kps[kp_name_to_id[pair.p2]]
+			pose1 = person[kp_name_to_id[pair.p1]]
+			pose2 = person[kp_name_to_id[pair.p2]]
 			p1_x, p1_y = pose1[1], pose1[2]
 			p2_x, p2_y = pose2[1], pose2[2]
 
 			p1_conf, p2_conf = (p1_x + p2_x) // 2, (p1_y + p2_y) // 2
 			if p1_conf != 0 and p2_conf != 0:
-				cv2.line(frame, (p1_x, p1_y), (p2_x, p2_y), pair.color, 3)
+				col = color if color else pair.color
+				cv2.line(frame, (p1_x, p1_y), (p2_x, p2_y), col, thickness)
 
 	def get_body_kp(self, kp_name="nose"):
 		"""Return the coordinates of a keypoint named 'kp_name', or None if keypoint not detected"""
@@ -139,3 +153,71 @@ class PoseDetectorWrapper:
 		else:
 			return None
 
+
+if __name__ == '__main__':
+
+	ap = argparse.ArgumentParser()
+	ap.add_argument("-i", "--input", default="0", help="input video file (0, filename, rtsp://admin:admin@192.168.1.71/1, ...")
+	ap.add_argument("-n", "--number_people_max", default=-1, help="limit the number of people detected")
+	ap.add_argument("-f", "--face", action="store_true", help="enable face keypoint detection")
+	ap.add_argument("--frt", type=float, default=0.4, help="face rendering threshold")
+	ap.add_argument("-o", "--output", help="path to output video file")
+	ap.add_argument("-r", "--rendering", default=True, action="store_true", help="display in a separate window the original rendering made by Openpose lib")
+
+	args = ap.parse_args()
+
+	if args.input.isdigit():
+		args.input = int(args.input)
+		w_h_list = [(960, 720), (640, 480), (320, 240)]
+		w_h_idx = 0
+
+	# Read video
+	video = cv2.VideoCapture(args.input)
+	if isinstance(args.input, int):
+		w, h = w_h_list[w_h_idx]
+		video.set(cv2.CAP_PROP_FRAME_WIDTH, w)
+		video.set(cv2.CAP_PROP_FRAME_HEIGHT, h)
+
+	ok, frame = video.read()
+	h, w, _ = frame.shape
+	if args.output:
+		fourcc = cv2.VideoWriter_fourcc(*"MJPG")
+		out = cv2.VideoWriter(args.output, fourcc, 30, (w, h))
+
+	my_op = PoseDetectorWrapper()
+
+	fps = FPS()
+	while True:
+		# Read a new frame
+		ok, frame = video.read()
+		if not ok:
+			break
+		fps.update()
+		frame = frame.copy()
+		nb_persons, body_kps, face_kps = my_op.eval(frame)
+
+		if len(body_kps) == 0:
+			continue
+		my_op.draw_body(frame)
+		if args.face:
+			my_op.draw_face(frame)
+			my_op.draw_eyes(frame)
+
+		fps.display(frame)
+		cv2.imshow("Rendering", frame)
+		if args.output:
+			out.write(frame)
+		# Exit if ESC pressed
+		k = cv2.waitKey(1) & 0xff
+		if k == 27:
+			break
+		elif k == 32:  # space
+			cv2.waitKey(0)
+		elif k == ord("s") and isinstance(args.input, int):
+			w_h_idx = (w_h_idx + 1) % len(w_h_list)
+			w, h = w_h_list[w_h_idx]
+			video.set(cv2.CAP_PROP_FRAME_WIDTH, w)
+			video.set(cv2.CAP_PROP_FRAME_HEIGHT, h)
+
+	video.release()
+	cv2.destroyAllWindows()
