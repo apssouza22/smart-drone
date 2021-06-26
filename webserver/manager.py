@@ -1,12 +1,14 @@
 import threading
 
+from common.pygamescreen import PyGameScreen
 from webserver.server import setup_server_runner, run_http_server, run_socket_server
 from webserver.video import VideoSource
 from webserver.websocket import WebSocketManager
 
 
 class WebControlManager:
-	def __init__(self, enable_http, enable_socket):
+	def __init__(self, enable_http, enable_socket, pygame_screen: PyGameScreen):
+		self.pygame_screen = pygame_screen
 		self.is_socket_enabled = enable_socket
 		self.is_http_enabled = enable_http
 		self.video_source = VideoSource()
@@ -14,7 +16,7 @@ class WebControlManager:
 
 	def start_http(self):
 		if self.is_http_enabled:
-			server_runner = setup_server_runner(self.video_source)
+			server_runner = setup_server_runner(self.video_source, self.pygame_screen)
 			td = threading.Thread(target=run_http_server, args=(server_runner,))
 			td.start()
 

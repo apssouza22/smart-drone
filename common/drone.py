@@ -61,6 +61,9 @@ class Drone:
 		self.drone_locator.update_axis(right_left, forward_back, up_down, rotation)
 		if not self.mock:
 			self.sdk.send_rc_control(right_left, forward_back, up_down, rotation)
+			return
+		print(right_left, forward_back, up_down, rotation)
+
 
 	def get_position_history(self):
 		return self.drone_locator.points

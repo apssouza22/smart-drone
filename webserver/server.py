@@ -4,6 +4,7 @@ import pathlib
 import aiohttp_cors
 from aiohttp import web
 
+from common.pygamescreen import PyGameScreen
 from webserver.controllers import TelloController, VideoController
 from webserver.routers import routes
 from webserver.video import VideoImageTrack, VideoSource
@@ -24,11 +25,11 @@ def set_cors(my_app, offer_route):
 	})
 
 
-def setup_server_runner(video: VideoSource):
+def setup_server_runner(video: VideoSource, drone_control: PyGameScreen):
 	app = web.Application()
 	video_controller = VideoController(VideoImageTrack(video))
 	offer_route = app.router.add_post("/offer", video_controller.offer)
-	routes.add_class_routes(TelloController())
+	routes.add_class_routes(TelloController(drone_control))
 	app.add_routes([
 		web.get('/ws', WebSocketManager.websocket_handler)
 	])
@@ -59,4 +60,4 @@ def run_socket_server(socket: WebSocketManager):
 
 
 if __name__ == "__main__":
-	run_http_server(setup_server_runner(VideoSource()))
+	run_http_server(setup_server_runner(VideoSource(), self.pygame_screen))

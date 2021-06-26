@@ -27,7 +27,7 @@ class InfoDisplayer:
 		fps.update()
 		self.add(f"FPS {fps.get():.2f}")
 		self.add(f"BAT {tello.battery}")
-		self.add(f"TRACKING {'ON' if tello.tracking else 'OFF'}", (0, 255, 0) if tello.tracking else (0, 0, 255))
+		self.add(f"TRACKING {'ON' if tello.is_tracking else 'OFF'}", (0, 255, 0) if tello.is_tracking else (0, 0, 255))
 
 		if tello.drone.is_flying:
 			self.add("FLYING", (0, 255, 0))
@@ -72,7 +72,7 @@ class InfoDisplayer:
 			self.add("Palm landing...", (0, 255, 0))
 		if tello.palm_landing_approach:
 			self.add("In approach for palm landing...", (0, 255, 0))
-		if tello.tracking and not tello.tracker.body_in_prev_frame and time.time() - tello.timestamp_no_body > 0.5:
+		if tello.is_tracking and not tello.tracker.body_in_prev_frame and time.time() - tello.timestamp_no_body > 0.5:
 			self.add("Searching...", (0, 255, 0))
 		if tello.scheduled_takeoff:
 			seconds_left = int(tello.scheduled_takeoff - time.time())

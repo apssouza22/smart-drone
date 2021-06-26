@@ -5,6 +5,8 @@ import sys
 import ujson
 from aiohttp import web
 from aiortc import RTCPeerConnection, RTCSessionDescription, VideoStreamTrack
+
+from common.pygamescreen import PyGameScreen
 from webserver.routers import routes
 from webserver.video import VideoImageTrack
 
@@ -15,21 +17,25 @@ class Controller:
 
 
 class TelloController(Controller):
-	def __init__(self):
+	def __init__(self, control: PyGameScreen):
 		super().__init__()
+		self.control = control
 
 	@routes.get("/api/test")
 	async def test(self, request):
 		print(request)
 		return self.json(["test"])
 
-	@routes.post("/api/tello")
+	@routes.get("/api/control")
 	async def command(self, request):
-		comm = await request.json()
-		print(comm, sys.stderr)
-		c = comm['command']
-		v = comm['value']
 		result = {'success': 'ok'}
+		if request.rel_url.query['command'] != "release":
+			self.control.controls_keypress[int(request.rel_url.query['value'])]()
+			return self.json(result)
+
+		for key, fn in self.control.controls_keyrelease.items():
+			fn()
+
 		return self.json(result)
 
 

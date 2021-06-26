@@ -46,7 +46,7 @@ class TelloEngine(object):
 		self.rotation = 0
 		self.toggle_tracking_timestamp = time.time() - 3
 		self.tracking_after_takeoff = False
-		self.tracking = False
+		self.is_tracking = False
 		self.keep_distance = None
 		self.rotation_to_consume = 0
 		self.timestamp_keep_distance = time.time()
@@ -146,7 +146,8 @@ class TelloEngine(object):
 
 	def handle_drone_path(self):
 		"""handle the drone path drawing and drone path planning"""
-		self.axis_speed = self.path_manager.handle(self.axis_speed, self.drone.is_flying)
+		if not self.is_tracking:
+			self.axis_speed = self.path_manager.handle(self.axis_speed, self.drone.is_flying)
 		if self.path_manager.path_planning.done and self.drone.is_flying:
 			self.drone.land()
 
@@ -168,7 +169,7 @@ class TelloEngine(object):
 
 			self.tracker.get_best_body_position(self, width, height)
 
-		if self.tracking:
+		if self.is_tracking:
 			if self.tracker.target:
 				self.tracker.track_target(self, frame)
 			else:
@@ -271,18 +272,18 @@ class TelloEngine(object):
 
 		self.toggle_tracking_timestamp = time.time()
 
-		if self.tracking != tracking and not self.tracking:
+		if self.is_tracking != tracking and not self.is_tracking:
 			self.sound_player.play("tracking-enabled")
 
-		if self.tracking != tracking and self.tracking:
+		if self.is_tracking != tracking and self.is_tracking:
 			self.sound_player.play("tracking-disabled")
 
 		if tracking is None:
-			self.tracking = not self.tracking
+			self.is_tracking = not self.is_tracking
 		else:
-			self.tracking = tracking
+			self.is_tracking = tracking
 
-		if self.tracking:
+		if self.is_tracking:
 			# Start an explarotary 360
 			# self.clockwise_degrees(360)
 			# Init a PID controller for the rotation and one for the throttle

@@ -52,7 +52,6 @@ async function call() {
 }
 
 function handleSocketResponse(event) {
-    console.log(event.data)
     console.log(JSON.parse(event.data));
 }
 

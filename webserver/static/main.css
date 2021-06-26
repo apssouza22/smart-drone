@@ -333,11 +333,11 @@ div.box {
     margin: 20px;
 }
 
-#joystick-left{
+#joystick-right{
     background: url(imgs/tello-controller-left.jpg) no-repeat 0px -10px;
 }
 
-#joystick-right{
+#joystick-left{
     background: url(imgs/tello-controller-right.jpg) no-repeat 0px -13px;
 }
 

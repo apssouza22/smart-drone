@@ -40,7 +40,7 @@ def main(mock_drone=True, enable_web=False, enable_socket=False, log_level=None)
 	engine = TelloEngine(drone, log_level=log_level)
 	fps = FPS()
 	info = InfoDisplayer()
-	web_control = WebControlManager(enable_web, enable_socket)
+	web_control = WebControlManager(enable_web, enable_socket, engine.pygame_screen)
 	web_control.start_http()
 	web_control.start_socket()
 
