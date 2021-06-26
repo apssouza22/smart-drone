@@ -6,6 +6,7 @@ This project was highly inspired by [Tello-openpose](https://github.com/geaxgx/t
 - Replaced Openpose by MediaPipe
 - Removed multiprocessing support
 - Replaced pynput by pygame
+- Added hand gestures commands
 
 ## Libraries and packages
 

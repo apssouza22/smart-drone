@@ -25,7 +25,7 @@ class PathController:
 	loaded_plan = {}
 
 	def __init__(self):
-		# self.delete_path_plan_file()
+		self.delete_path_plan_file()
 		pass
 
 	def read_path_plan(self):
@@ -34,8 +34,9 @@ class PathController:
 		f = open("waypoint.json")
 		self.loaded_plan = json.load(f)
 		self.wp = self.loaded_plan["wp"]
-		self.x, self.y = self.loaded_plan["pos"][0]
-		self.contain_path_plan = True
+		if len(self.loaded_plan["pos"]) > 0:
+			self.x, self.y = self.loaded_plan["pos"][0]
+			self.contain_path_plan = True
 
 	def move(self):
 		self.current_point = self.current_point + 1
