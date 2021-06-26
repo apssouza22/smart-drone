@@ -1,9 +1,20 @@
+import time
+
 import aiohttp
 from aiohttp import web
 
 
 class WebSocketManager:
 	sockets = []
+	msg = ""
+	last_msg = ""
+
+	async def handle(self) -> None:
+		while True:
+			if self.msg != self.last_msg:
+				await self.send("{\"position\":\"" + self.msg + "\"}")
+				self.last_msg = self.msg
+				time.sleep(0.25)
 
 	async def send(self, message: str):
 		for socket in WebSocketManager.sockets:
@@ -21,7 +32,6 @@ class WebSocketManager:
 					await ws.close()
 				else:
 					pass
-			# await ws.send_str(msg.data + '/answer')
 			elif msg.type == aiohttp.WSMsgType.ERROR:
 				print('ws connection closed with exception %s' %
 					  ws.exception())

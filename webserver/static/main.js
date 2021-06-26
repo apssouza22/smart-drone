@@ -40,7 +40,7 @@ addListeners();
 async function call() {
     callButton.disabled = true;
     hangupButton.disabled = false;
-    console.log('Starting connect');
+    console.log('Starting webrtc connection');
     startTime = window.performance.now();
     video.start()
 
@@ -52,6 +52,7 @@ async function call() {
 }
 
 function handleSocketResponse(event) {
+    console.log(event.data)
     console.log(JSON.parse(event.data));
 }
 

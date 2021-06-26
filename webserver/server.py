@@ -39,15 +39,24 @@ def setup_server_runner(video: VideoSource):
 	return web.AppRunner(app)
 
 
-def run_server(runner):
+def run_http_server(runner):
 	loop = asyncio.new_event_loop()
 	asyncio.set_event_loop(loop)
 	loop.run_until_complete(runner.setup())
 	site = web.TCPSite(runner, 'localhost', 8080)
 	loop.run_until_complete(site.start())
+	# loop.run_until_complete(socket.handle())
 	loop.run_forever()
 	print("Access http://0.0.0.0:8080/static/index.html")
 
 
+def run_socket_server(socket: WebSocketManager):
+	loop = asyncio.new_event_loop()
+	asyncio.set_event_loop(loop)
+	loop.run_until_complete(socket.handle())
+	loop.run_forever()
+	print("Access http://0.0.0.0:8080/ws")
+
+
 if __name__ == "__main__":
-	run_server(setup_server_runner(VideoSource()))
+	run_http_server(setup_server_runner(VideoSource()))

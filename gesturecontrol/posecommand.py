@@ -83,15 +83,15 @@ class PoseCommandRunner:
 
 	def get_commands(self):
 		return {
-			"RIGHT_HAND_FINGERS_UP_0": self.land,
+			"RIGHT_HAND_FINGERS_UP_0": self.lock_dist,
 			"RIGHT_HAND_FINGERS_UP_1": self.go_left,
 			"RIGHT_HAND_FINGERS_UP_2": self.go_right,
-			"RIGHT_HAND_FINGERS_UP_4": self.lock_dist,
 			"LEFT_HAND_FINGERS_UP_0": self.toggle_tracking,
 			"LEFT_HAND_FINGERS_UP_1": self.go_forward,
 			"LEFT_HAND_FINGERS_UP_2": self.go_back,
+			"BOTH_HAND_FINGERS_UP_0": self.land,
 			"BOTH_HAND_FINGERS_UP_1": self.taking_picture,
-			"BOTH_HAND_FINGERS_UP_0": self.palm_land,
+			"BOTH_HAND_FINGERS_UP_2": self.palm_land,
 
 			# Commands disabled at the moment
 			# "HANDS_ON_NECK": self.take_picture,

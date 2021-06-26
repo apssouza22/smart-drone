@@ -181,10 +181,16 @@ class PoseChecker(object):
 		finger_tip_ids = [4, 8, 12, 16, 20]
 		# Thumb
 		thumb_bottom = 2
-		if right:
-			thumbs_up = hand_kps[finger_tip_ids[0]][1] > hand_kps[thumb_bottom][1]
-		else:
-			thumbs_up = hand_kps[finger_tip_ids[0]][1] < hand_kps[thumb_bottom][1]
+		if len(hand_kps) < 1:
+			return 7
+
+		finger_position = hand_kps[finger_tip_ids[0]]
+
+		if len(finger_position) > 1:
+			if right:
+				thumbs_up = finger_position[1] > hand_kps[thumb_bottom][1]
+			else:
+				thumbs_up = finger_position[1] < hand_kps[thumb_bottom][1]
 
 		if thumbs_up:
 			fingers.append(1)
