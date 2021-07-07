@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1E225621269622C100EA73E7 /* Joystick.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E225620269622C100EA73E7 /* Joystick.swift */; };
 		1E3851222695B55F006B9859 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3851212695B55F006B9859 /* AppDelegate.swift */; };
 		1E3851242695B55F006B9859 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3851232695B55F006B9859 /* SceneDelegate.swift */; };
 		1E3851262695B55F006B9859 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3851252695B55F006B9859 /* ViewController.swift */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1E225620269622C100EA73E7 /* Joystick.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Joystick.swift; sourceTree = "<group>"; };
 		1E38511E2695B55F006B9859 /* SmartDroneiOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmartDroneiOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E3851212695B55F006B9859 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1E3851232695B55F006B9859 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -73,6 +75,7 @@
 				1E38512C2695B562006B9859 /* LaunchScreen.storyboard */,
 				1E38512F2695B562006B9859 /* Info.plist */,
 				1E95F8972695CF8F0028A113 /* UIDevice+IPAddress.swift */,
+				1E225620269622C100EA73E7 /* Joystick.swift */,
 			);
 			path = SmartDroneiOS;
 			sourceTree = "<group>";
@@ -208,6 +211,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E225621269622C100EA73E7 /* Joystick.swift in Sources */,
 				1E3851262695B55F006B9859 /* ViewController.swift in Sources */,
 				1E3851222695B55F006B9859 /* AppDelegate.swift in Sources */,
 				1E3851242695B55F006B9859 /* SceneDelegate.swift in Sources */,

@@ -12,6 +12,8 @@ import SwiftSocket
 class ViewController: UIViewController {
     @IBOutlet var infoLabel: UILabel!
     @IBOutlet var imageView: UIImageView!
+    @IBOutlet var leftJoystick: Joystick!
+    @IBOutlet var rightJoystick: Joystick!
     
     enum State {
         case start
@@ -43,6 +45,8 @@ class ViewController: UIViewController {
                 }
             case .ready:
                 showInfoMessage("Connect to\n\(self.address!):\(self.port)\nto Start")
+                leftJoystick.stop()
+                rightJoystick.stop()
                 DispatchQueue.global(qos: .background).async { [weak self] in
                     guard let self = self else { return }
                     while self.client == nil {
@@ -51,6 +55,15 @@ class ViewController: UIViewController {
                     self.changeState(to: .connected)
                 }
             case .connected:
+                leftJoystick.start(id: "l") { [weak self] id, direction in
+                    guard let self = self else { return }
+                    self.sendDirection(command: id + direction.rawValue)
+                }
+                rightJoystick.start(id: "r") { [weak self] id, direction in
+                    guard let self = self else { return }
+                    self.sendDirection(command: id + direction.rawValue)
+                }
+                
                 DispatchQueue.global(qos: .background).async { [weak self] in
                     guard let self = self else { return }
                     while self.client != nil {
@@ -122,6 +135,13 @@ class ViewController: UIViewController {
             guard let self = self else { return }
             self.imageView.image = nil
             self.imageView.image = image
+        }
+    }
+    
+    func sendDirection(command: String) {
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            guard let self = self else { return }
+            _ = self.client.send(string: command)
         }
     }
     

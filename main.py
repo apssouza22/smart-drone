@@ -45,7 +45,7 @@ def main(mock_drone=True, enable_web=False, enable_socket=False, enable_ios=Fals
 	web_control = WebControlManager(enable_web, enable_socket, engine.pygame_screen)
 	web_control.start_http()
 	web_control.start_socket()
-	ios_control = IOSControlManager(enable_ios, '192.168.86.34', 8245)
+	ios_control = IOSControlManager(enable_ios, '192.168.86.250', 8245, engine.pygame_screen)
 
 	while True:
 		if skip_frame():
@@ -66,4 +66,4 @@ def main(mock_drone=True, enable_web=False, enable_socket=False, enable_ios=Fals
 
 
 if __name__ == '__main__':
-	main(True, True, False, False, None)
+	main(True, True, False, True, None)
