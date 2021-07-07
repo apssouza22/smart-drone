@@ -53,16 +53,16 @@ class PoseCommandRunner:
 				tello.keep_distance = None
 				tello.timestamp_keep_distance = time.time()
 
-	def palm_land(self, tello, log):
+	def initiate_palm_landing(self, engine, log):
 		# Get close to the body then palm landing
-		if not tello.palm_landing_approach:
-			tello.use_gesture_control = False
-			tello.palm_landing_approach = True
-			tello.keep_distance = self.proximity
-			tello.timestamp_keep_distance = time.time()
+		if not engine.palm_landing_approach:
+			engine.toggle_tracking(tracking=True)
+			engine.palm_landing_approach = True
+			engine.keep_distance = self.proximity
+			engine.timestamp_keep_distance = time.time()
 			log.info("APPROACHING on pose")
-			tello.pid_pitch = PID(0.2, 0.02, 0.1, setpoint=0, output_limits=(-45, 45))
-			tello.sound_player.play("approaching")
+			engine.pid_pitch = PID(0.2, 0.02, 0.1, setpoint=0, output_limits=(-45, 45))
+			engine.sound_player.play("approaching")
 
 	@staticmethod
 	def land(tello, log):
@@ -91,7 +91,7 @@ class PoseCommandRunner:
 			"LEFT_HAND_FINGERS_UP_2": self.go_back,
 			"BOTH_HAND_FINGERS_UP_0": self.land,
 			"BOTH_HAND_FINGERS_UP_1": self.taking_picture,
-			"BOTH_HAND_FINGERS_UP_2": self.palm_land,
+			"BOTH_HAND_FINGERS_UP_2": self.initiate_palm_landing,
 
 			# Commands disabled at the moment
 			# "HANDS_ON_NECK": self.take_picture,

@@ -239,6 +239,8 @@ class TelloEngine(object):
 		"""
 			Tell drone to land
 		"""
+		self.palm_landing_approach = False
+		self.toggle_tracking(tracking=False)
 		self.palm_landing = True
 		self.sound_player.play("palm landing")
 		self.drone.land()

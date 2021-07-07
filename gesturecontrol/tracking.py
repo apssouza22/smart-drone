@@ -55,11 +55,6 @@ class PersonTracker:
 		# If in lock distance mode
 		if tello.keep_distance and tello.shoulders_width:
 			if tello.palm_landing_approach and tello.shoulders_width > tello.keep_distance:
-				# The drone is now close enough to the body
-				# Let's do the palm landing
-				self.log.info("PALM LANDING after approaching")
-				tello.palm_landing_approach = False
-				tello.toggle_tracking(tracking=False)
 				tello.palm_land()
 			else:
 				tello.axis_speed["forward-back"] = int(tello.pid_pitch(tello.shoulders_width - tello.keep_distance))
