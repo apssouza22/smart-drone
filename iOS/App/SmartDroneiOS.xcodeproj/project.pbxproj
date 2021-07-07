@@ -1,0 +1,420 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 51;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1E3851222695B55F006B9859 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3851212695B55F006B9859 /* AppDelegate.swift */; };
+		1E3851242695B55F006B9859 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3851232695B55F006B9859 /* SceneDelegate.swift */; };
+		1E3851262695B55F006B9859 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3851252695B55F006B9859 /* ViewController.swift */; };
+		1E3851292695B55F006B9859 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E3851272695B55F006B9859 /* Main.storyboard */; };
+		1E38512B2695B562006B9859 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1E38512A2695B562006B9859 /* Assets.xcassets */; };
+		1E38512E2695B562006B9859 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E38512C2695B562006B9859 /* LaunchScreen.storyboard */; };
+		1E95F8982695CF8F0028A113 /* UIDevice+IPAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E95F8972695CF8F0028A113 /* UIDevice+IPAddress.swift */; };
+		48481E0AFE84FA4641D875C5 /* Pods_SmartDroneiOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB4DD7FF81E6A7B2C60A7F9F /* Pods_SmartDroneiOS.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1E38511E2695B55F006B9859 /* SmartDroneiOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmartDroneiOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E3851212695B55F006B9859 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		1E3851232695B55F006B9859 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		1E3851252695B55F006B9859 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		1E3851282695B55F006B9859 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		1E38512A2695B562006B9859 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		1E38512D2695B562006B9859 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		1E38512F2695B562006B9859 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1E95F8972695CF8F0028A113 /* UIDevice+IPAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+IPAddress.swift"; sourceTree = "<group>"; };
+		61C7D695CAF1C490BC8A1B23 /* Pods-SmartDroneiOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmartDroneiOS.release.xcconfig"; path = "Target Support Files/Pods-SmartDroneiOS/Pods-SmartDroneiOS.release.xcconfig"; sourceTree = "<group>"; };
+		A3A29877222215295AF9FECA /* Pods-SmartDroneiOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmartDroneiOS.debug.xcconfig"; path = "Target Support Files/Pods-SmartDroneiOS/Pods-SmartDroneiOS.debug.xcconfig"; sourceTree = "<group>"; };
+		CB4DD7FF81E6A7B2C60A7F9F /* Pods_SmartDroneiOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SmartDroneiOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1E38511B2695B55F006B9859 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				48481E0AFE84FA4641D875C5 /* Pods_SmartDroneiOS.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1E3851152695B55F006B9859 = {
+			isa = PBXGroup;
+			children = (
+				1E3851202695B55F006B9859 /* SmartDroneiOS */,
+				1E38511F2695B55F006B9859 /* Products */,
+				51C8313359C98BC67AB371A7 /* Pods */,
+				40D10A24C0B67A6DF4C33DE4 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		1E38511F2695B55F006B9859 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1E38511E2695B55F006B9859 /* SmartDroneiOS.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1E3851202695B55F006B9859 /* SmartDroneiOS */ = {
+			isa = PBXGroup;
+			children = (
+				1E3851212695B55F006B9859 /* AppDelegate.swift */,
+				1E3851232695B55F006B9859 /* SceneDelegate.swift */,
+				1E3851252695B55F006B9859 /* ViewController.swift */,
+				1E3851272695B55F006B9859 /* Main.storyboard */,
+				1E38512A2695B562006B9859 /* Assets.xcassets */,
+				1E38512C2695B562006B9859 /* LaunchScreen.storyboard */,
+				1E38512F2695B562006B9859 /* Info.plist */,
+				1E95F8972695CF8F0028A113 /* UIDevice+IPAddress.swift */,
+			);
+			path = SmartDroneiOS;
+			sourceTree = "<group>";
+		};
+		40D10A24C0B67A6DF4C33DE4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CB4DD7FF81E6A7B2C60A7F9F /* Pods_SmartDroneiOS.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		51C8313359C98BC67AB371A7 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				A3A29877222215295AF9FECA /* Pods-SmartDroneiOS.debug.xcconfig */,
+				61C7D695CAF1C490BC8A1B23 /* Pods-SmartDroneiOS.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1E38511D2695B55F006B9859 /* SmartDroneiOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1E3851322695B562006B9859 /* Build configuration list for PBXNativeTarget "SmartDroneiOS" */;
+			buildPhases = (
+				5C0C13D60DDB526F5A3767D5 /* [CP] Check Pods Manifest.lock */,
+				1E38511A2695B55F006B9859 /* Sources */,
+				1E38511B2695B55F006B9859 /* Frameworks */,
+				1E38511C2695B55F006B9859 /* Resources */,
+				C91D5DAF0DC8994AACCA0FD3 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SmartDroneiOS;
+			productName = SmartDroneiOS;
+			productReference = 1E38511E2695B55F006B9859 /* SmartDroneiOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1E3851162695B55F006B9859 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1250;
+				LastUpgradeCheck = 1250;
+				TargetAttributes = {
+					1E38511D2695B55F006B9859 = {
+						CreatedOnToolsVersion = 12.5.1;
+					};
+				};
+			};
+			buildConfigurationList = 1E3851192695B55F006B9859 /* Build configuration list for PBXProject "SmartDroneiOS" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 1E3851152695B55F006B9859;
+			productRefGroup = 1E38511F2695B55F006B9859 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1E38511D2695B55F006B9859 /* SmartDroneiOS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1E38511C2695B55F006B9859 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E38512E2695B562006B9859 /* LaunchScreen.storyboard in Resources */,
+				1E38512B2695B562006B9859 /* Assets.xcassets in Resources */,
+				1E3851292695B55F006B9859 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		5C0C13D60DDB526F5A3767D5 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SmartDroneiOS-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C91D5DAF0DC8994AACCA0FD3 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SmartDroneiOS/Pods-SmartDroneiOS-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SmartDroneiOS/Pods-SmartDroneiOS-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SmartDroneiOS/Pods-SmartDroneiOS-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1E38511A2695B55F006B9859 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E3851262695B55F006B9859 /* ViewController.swift in Sources */,
+				1E3851222695B55F006B9859 /* AppDelegate.swift in Sources */,
+				1E3851242695B55F006B9859 /* SceneDelegate.swift in Sources */,
+				1E95F8982695CF8F0028A113 /* UIDevice+IPAddress.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		1E3851272695B55F006B9859 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1E3851282695B55F006B9859 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		1E38512C2695B562006B9859 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1E38512D2695B562006B9859 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		1E3851302695B562006B9859 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		1E3851312695B562006B9859 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		1E3851332695B562006B9859 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A3A29877222215295AF9FECA /* Pods-SmartDroneiOS.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 53LMMY8DL5;
+				INFOPLIST_FILE = SmartDroneiOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.asfy.SmartDroneiOS;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1E3851342695B562006B9859 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 61C7D695CAF1C490BC8A1B23 /* Pods-SmartDroneiOS.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 53LMMY8DL5;
+				INFOPLIST_FILE = SmartDroneiOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.asfy.SmartDroneiOS;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1E3851192695B55F006B9859 /* Build configuration list for PBXProject "SmartDroneiOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1E3851302695B562006B9859 /* Debug */,
+				1E3851312695B562006B9859 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1E3851322695B562006B9859 /* Build configuration list for PBXNativeTarget "SmartDroneiOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1E3851332695B562006B9859 /* Debug */,
+				1E3851342695B562006B9859 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1E3851162695B55F006B9859 /* Project object */;
+}
