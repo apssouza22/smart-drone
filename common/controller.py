@@ -60,7 +60,7 @@ class TelloEngine(object):
 		self.set_logging(log_level)
 		self.init_sounds()
 		self.start_time = time.time()
-		self.use_gesture_control = False
+		self.use_gesture_control = True
 		self.is_pressed = False
 		self.battery = self.drone.get_battery()
 		self.pose_detector = PoseDetectorWrapper()
