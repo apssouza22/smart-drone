@@ -4,82 +4,82 @@ from simple_pid import PID
 
 
 class PoseCommandRunner:
-	def __init__(self, tello, log, proximity):
+	def __init__(self, controller, log, proximity):
 		self.proximity = proximity
-		self.tello = tello
+		self.controller = controller
 		self.log = log
 		self.commands = self.get_commands()
 
 	def run(self, pose):
 		if pose in self.commands:
 			command = self.commands[pose]
-			command(self.tello, self.log)
+			command(self.controller, self.log)
 
 	@staticmethod
-	def go_left(tello, log):
+	def go_left(controller, log):
 		log.info("GOING LEFT from pose")
-		tello.axis_speed["right-left"] = tello.def_speed["right-left"]
+		controller.axis_speed["right-left"] = controller.def_speed["right-left"]
 
 	@staticmethod
-	def go_right(tello, log):
+	def go_right(controller, log):
 		log.info("GOING RIGHT from pose")
-		tello.axis_speed["right-left"] = -tello.def_speed["right-left"]
+		controller.axis_speed["right-left"] = -controller.def_speed["right-left"]
 
 	@staticmethod
-	def go_forward(tello, log):
+	def go_forward(controller, log):
 		log.info("GOING FORWARD from pose")
-		tello.axis_speed["forward-back"] = tello.def_speed["forward-back"]
+		controller.axis_speed["forward-back"] = controller.def_speed["forward-back"]
 
 	@staticmethod
-	def go_back(tello, log):
+	def go_back(controller, log):
 		log.info("GOING BACKWARD from pose")
-		tello.axis_speed["forward-back"] = -tello.def_speed["forward-back"]
+		controller.axis_speed["forward-back"] = -controller.def_speed["forward-back"]
 
 	@staticmethod
-	def lock_dist(tello, log):
+	def lock_dist(controller, log):
 		# Locked distance mode
-		if tello.keep_distance is None:
-			if time.time() - tello.timestamp_keep_distance > tello.toggle_action_interval:
+		if controller.keep_distance is None:
+			if time.time() - controller.timestamp_keep_distance > controller.toggle_action_interval:
 				# The first frame of a serie to activate the distance keeping
-				tello.keep_distance = tello.shoulders_width
-				tello.timestamp_keep_distance = time.time()
-				log.info(f"KEEP DISTANCE {tello.keep_distance}")
-				tello.pid_pitch = PID(0.5, 0.04, 0.3, setpoint=0, output_limits=(-50, 50))
-				tello.sound_player.play("keeping distance")
+				controller.keep_distance = controller.shoulders_width
+				controller.timestamp_keep_distance = time.time()
+				log.info(f"KEEP DISTANCE {controller.keep_distance}")
+				controller.pid_pitch = PID(0.5, 0.04, 0.3, setpoint=0, output_limits=(-50, 50))
+				controller.sound_player.play("keeping distance")
 		else:
-			if time.time() - tello.timestamp_keep_distance > tello.toggle_action_interval:
+			if time.time() - controller.timestamp_keep_distance > controller.toggle_action_interval:
 				log.info("KEEP DISTANCE FINISHED")
-				tello.sound_player.play("free")
-				tello.keep_distance = None
-				tello.timestamp_keep_distance = time.time()
+				controller.sound_player.play("free")
+				controller.keep_distance = None
+				controller.timestamp_keep_distance = time.time()
 
-	def initiate_palm_landing(self, engine, log):
+	def initiate_palm_landing(self, controller, log):
 		# Get close to the body then palm landing
-		if not engine.palm_landing_approach:
-			engine.toggle_tracking(tracking=True)
-			engine.palm_landing_approach = True
-			engine.keep_distance = self.proximity
-			engine.timestamp_keep_distance = time.time()
+		if not controller.palm_landing_approach:
+			controller.toggle_tracking(tracking=True)
+			controller.palm_landing_approach = True
+			controller.keep_distance = self.proximity
+			controller.timestamp_keep_distance = time.time()
 			log.info("APPROACHING on pose")
-			engine.pid_pitch = PID(0.2, 0.02, 0.1, setpoint=0, output_limits=(-45, 45))
-			engine.sound_player.play("approaching")
+			controller.pid_pitch = PID(0.2, 0.02, 0.1, setpoint=0, output_limits=(-45, 45))
+			controller.sound_player.play("approaching")
 
 	@staticmethod
-	def land(tello, log):
-		if not tello.palm_landing:
+	def land(controller, log):
+		if not controller.palm_landing:
 			log.info("LANDING on pose")
-			tello.toggle_tracking(tracking=False)
-			tello.sound_player.play("landing")
-			tello.drone.land()
+			controller.toggle_tracking(tracking=False)
+			controller.sound_player.play("landing")
+			controller.drone.land()
 
 	@staticmethod
-	def toggle_tracking(tello, log):
+	def toggle_tracking(controller, log):
 		log.info("TRACKING TOGGLE on pose")
-		tello.toggle_tracking()
+		controller.toggle_tracking()
 
 	@staticmethod
-	def taking_picture(tello, log):
-		tello.take_picture()
+	def taking_picture(controller, log):
+		controller.take_picture()
 
 	def get_commands(self):
 		return {

@@ -51,13 +51,13 @@ def vertical_angle(img, p1, p2, p3, draw=False):
 
 class PoseChecker(object):
 
-	def __init__(self, tello):
-		self.tello = tello
-		self.load_limbs(tello)
+	def __init__(self, controller):
+		self.controller = controller
+		self.load_limbs(controller)
 		self.shoulders_width = None
 		if self.r_shoulder and self.l_shoulder:
 			self.shoulders_width = distance(self.r_shoulder, self.l_shoulder)
-			tello.shoulders_width = self.shoulders_width
+			controller.shoulders_width = self.shoulders_width
 
 	def get_pose(self, frame):
 		"""
@@ -71,27 +71,27 @@ class PoseChecker(object):
 			if pose:
 				return pose
 
-			pose = self.get_both_hands_pose(self.tello)
+			pose = self.get_both_hands_pose(self.controller)
 			if pose:
 				return pose
 
 		if right_hand_up and not left_hand_up:
 			shoulder_wrist_angle_right = vertical_angle(frame, self.r_shoulder, self.r_elbow, self.r_wrist, True)
-			pose = self.get_right_arm_pose(self.tello, shoulder_wrist_angle_right)
+			pose = self.get_right_arm_pose(self.controller, shoulder_wrist_angle_right)
 			if pose:
 				return pose
 
-			pose = self.get_right_hand_pose(self.tello)
+			pose = self.get_right_hand_pose(self.controller)
 			if pose:
 				return pose
 
 		if not right_hand_up and left_hand_up:
 			shoulder_wrist_angle_left = vertical_angle(frame, self.l_shoulder, self.l_elbow, self.l_wrist, True)
-			pose = self.get_left_arm_pose(self.tello, shoulder_wrist_angle_left)
+			pose = self.get_left_arm_pose(self.controller, shoulder_wrist_angle_left)
 			if pose:
 				return pose
 
-			pose = self.get_left_hand_pose(self.tello)
+			pose = self.get_left_hand_pose(self.controller)
 			if pose:
 				return pose
 
@@ -102,7 +102,7 @@ class PoseChecker(object):
 				return "HANDS_ON_NECK"
 		return None
 
-	def get_left_arm_pose(self, tello, vert_angle_left_arm):
+	def get_left_arm_pose(self, controller, vert_angle_left_arm):
 		return None
 		# Left ear and left hand on the same side
 		if self.l_ear and (self.l_ear[0] - self.neck[0]) * (self.l_wrist[0] - self.neck[0]) > 0:
@@ -116,7 +116,7 @@ class PoseChecker(object):
 			return "LEFT_HAND_ON_RIGHT_EAR"
 		return None
 
-	def get_right_arm_pose(self, tello, vert_angle_right_arm):
+	def get_right_arm_pose(self, controller, vert_angle_right_arm):
 		return None
 		# Right ear and right hand on the same side
 		if self.r_ear and (self.r_ear[0] - self.neck[0]) * (self.r_wrist[0] - self.neck[0]) > 0:
@@ -149,29 +149,29 @@ class PoseChecker(object):
 
 		return None
 
-	def load_limbs(self, tello):
-		self.neck = tello.pose_detector.get_body_kp("neck")
-		self.r_wrist = tello.pose_detector.get_body_kp("right_wrist")
-		self.l_wrist = tello.pose_detector.get_body_kp("left_wrist")
-		self.r_elbow = tello.pose_detector.get_body_kp("right_elbow")
-		self.l_elbow = tello.pose_detector.get_body_kp("left_elbow")
-		self.r_shoulder = tello.pose_detector.get_body_kp("right_shoulder")
-		self.l_shoulder = tello.pose_detector.get_body_kp("left_shoulder")
-		self.r_ear = tello.pose_detector.get_body_kp("right_ear")
-		self.l_ear = tello.pose_detector.get_body_kp("left_ear")
+	def load_limbs(self, controller):
+		self.neck = controller.pose_detector.get_body_kp("neck")
+		self.r_wrist = controller.pose_detector.get_body_kp("right_wrist")
+		self.l_wrist = controller.pose_detector.get_body_kp("left_wrist")
+		self.r_elbow = controller.pose_detector.get_body_kp("right_elbow")
+		self.l_elbow = controller.pose_detector.get_body_kp("left_elbow")
+		self.r_shoulder = controller.pose_detector.get_body_kp("right_shoulder")
+		self.l_shoulder = controller.pose_detector.get_body_kp("left_shoulder")
+		self.r_ear = controller.pose_detector.get_body_kp("right_ear")
+		self.l_ear = controller.pose_detector.get_body_kp("left_ear")
 
-	def get_left_hand_pose(self, tello):
-		if len(tello.pose_detector.left_hand_kps) == 0:
+	def get_left_hand_pose(self, controller):
+		if len(controller.pose_detector.left_hand_kps) == 0:
 			return None
 
-		fingers = self.get_finger_counts(tello.pose_detector.left_hand_kps)
+		fingers = self.get_finger_counts(controller.pose_detector.left_hand_kps)
 		return "LEFT_HAND_FINGERS_UP_{}".format(fingers)
 
-	def get_right_hand_pose(self, tello):
-		if len(tello.pose_detector.right_hand_kps) == 0:
+	def get_right_hand_pose(self, controller):
+		if len(controller.pose_detector.right_hand_kps) == 0:
 			return None
 
-		fingers = self.get_finger_counts(tello.pose_detector.right_hand_kps, True)
+		fingers = self.get_finger_counts(controller.pose_detector.right_hand_kps, True)
 		return "RIGHT_HAND_FINGERS_UP_{}".format(fingers)
 
 	@staticmethod
@@ -182,7 +182,7 @@ class PoseChecker(object):
 		# Thumb
 		thumb_bottom = 2
 		if len(hand_kps) < 1:
-			return 7
+			return -1
 
 		finger_position = hand_kps[finger_tip_ids[0]]
 
@@ -204,12 +204,12 @@ class PoseChecker(object):
 				fingers.append(0)
 		return fingers.count(1)
 
-	def get_both_hands_pose(self, tello):
-		if len(tello.pose_detector.right_hand_kps) == 0:
+	def get_both_hands_pose(self, controller):
+		if len(controller.pose_detector.right_hand_kps) == 0:
 			return None
 
-		fingers_right = self.get_finger_counts(tello.pose_detector.right_hand_kps, True)
-		fingers_left = self.get_finger_counts(tello.pose_detector.left_hand_kps, False)
+		fingers_right = self.get_finger_counts(controller.pose_detector.right_hand_kps, True)
+		fingers_left = self.get_finger_counts(controller.pose_detector.left_hand_kps, False)
 		if fingers_right != fingers_left:
 			return None
 

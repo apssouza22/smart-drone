@@ -14,7 +14,7 @@ class WebSocketManager:
 			if self.msg != self.last_msg:
 				await self.send("{\"position\":\"" + self.msg + "\"}")
 				self.last_msg = self.msg
-				time.sleep(0.25)
+			time.sleep(0.25)
 
 	async def send(self, message: str):
 		for socket in WebSocketManager.sockets:

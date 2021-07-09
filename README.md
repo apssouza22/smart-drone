@@ -1,6 +1,6 @@
 # Smart drone
 
-This project leverage from Machine learning/Computer vision and state of the art technologies
+This project leverage from Machine learning/Computer vision and Robotics
 to make a lower cost Drone smarter([Tello](https://m.dji.com/ie/shop/tello-series)).
 
 <img src="assets/demo.jpg"/>
