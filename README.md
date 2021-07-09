@@ -1,16 +1,20 @@
 # Smart drone
 
 This project leverage from Machine learning/Computer vision and Robotics
-to make a lower cost Drone smarter([Tello](https://m.dji.com/ie/shop/tello-series)).
+to make a low-cost Drone smarter([Tello](https://m.dji.com/ie/shop/tello-series)).
+
 
 <img src="assets/demo.jpg"/>
+
+[Check out the video](https://youtu.be/a5ddyfV1hxk)
+
 
 ## Features  
 - Control the drone by gestures
 - People tracking
 - People searching
 - Sound feedback
-- Morse commands using camera
+- Morse commands using the camera
 - Keyboard control
 - Drone path monitoring
 - Drone path planning
@@ -18,6 +22,19 @@ to make a lower cost Drone smarter([Tello](https://m.dji.com/ie/shop/tello-serie
 - Remote control using websocket
 - HTML 5 joystick control
 - Apple IOS joystick control (check the ios branch)
+
+## Install dependencies
+We provide the requirements.txt file with the required Python dependencies but OpenCV and FFMPEG
+is tricky to install, and you should check on the internet how to install it properly
+
+```pip install -r requirements.txt```
+
+## How to run 
+You don't need to have a drone to play with the project, the project come with a 
+simulated option which will use your comera and you will be able to see the drone moving on the path monitoring window.
+
+If you have the Tello drone, you will need to turn off the mock on the `main` function call.
+
 
 The gesture module was highly inspired by [Tello-openpose](https://github.com/geaxgx/tello-openpose)
  

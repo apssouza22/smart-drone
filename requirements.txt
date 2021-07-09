@@ -1,0 +1,9 @@
+numpy>=1.18.1
+opencv-python
+pygame
+djitellopy
+av
+aiohttp
+simple_pid
+aiortc
+mediapipe
