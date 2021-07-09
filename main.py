@@ -66,4 +66,4 @@ def main(mock_drone=True, enable_web=False, enable_socket=False, enable_ios=Fals
 
 
 if __name__ == '__main__':
-	main(True, True, False, True, None)
+	main(True, True, False, False, None)

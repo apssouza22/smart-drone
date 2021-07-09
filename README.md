@@ -3,9 +3,7 @@
 This project leverage from Machine learning/Computer vision and state of the art technologies
 to make a lower cost Drone smarter([Tello](https://m.dji.com/ie/shop/tello-series)).
 
-<img src="assets/pictures/demo.png"/>
-
-<img src="assets/remote-operation.png"/>
+<img src="assets/demo.jpg"/>
 
 ## Features  
 - Control the drone by gestures
