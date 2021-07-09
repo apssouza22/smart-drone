@@ -17,6 +17,7 @@ to make a lower cost Drone smarter([Tello](https://m.dji.com/ie/shop/tello-serie
 - Video streaming using Webrtc
 - Remote control using websocket
 - HTML 5 joystick control
+- Apple IOS joystick control (check the ios branch)
 
 The gesture module was highly inspired by [Tello-openpose](https://github.com/geaxgx/tello-openpose)
  
