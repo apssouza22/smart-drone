@@ -9,7 +9,7 @@ import logging
 import sys
 import time
 
-from djitellopy import tello as drone
+from gesturecontrol.bodydetector import *
 from simple_pid import PID
 
 from common.cameramorse import CameraMorse
@@ -18,7 +18,6 @@ from common.pygamescreen import PyGameScreen
 from common.soundplayer import SoundPlayer, Tone
 from gesturecontrol.posecheck import PoseChecker
 from gesturecontrol.posecommand import PoseCommandRunner
-from gesturecontrol.posedetectorwrapper import *
 from gesturecontrol.tracking import PersonTracker
 from pathplan.pathmanager import PathManager
 
@@ -63,7 +62,7 @@ class TelloEngine(object):
 		self.use_gesture_control = True
 		self.is_pressed = False
 		self.battery = self.drone.get_battery()
-		self.pose_detector = PoseDetectorWrapper()
+		self.pose_detector = BodyDetector()
 		self.morse = CameraMorse(display=False)
 		self.morse.define_command("-", self.delayed_takeoff)
 		self.tracker = PersonTracker(log)

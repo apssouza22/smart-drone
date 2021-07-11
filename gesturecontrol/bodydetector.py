@@ -4,13 +4,11 @@
     Modify MODEL_FOLDER to point to the directory where the models are installed
 """
 
-import argparse
 from collections import namedtuple
 
 import cv2
 
-from common import posemodule as pm
-from common.fps import FPS
+from common.mediapipewrapper import MediaPipeWrapper
 
 body_kp_id_to_name = {
 	0: "nose",
@@ -102,15 +100,10 @@ pairs_feet = [
 pairs_body = pairs_head + pairs_upper_limbs + pairs_lower_limbs + pairs_spine + pairs_feet
 
 
-class PoseDetectorWrapper:
+class BodyDetector:
 
 	def __init__(self):
-		"""
-        openpose_rendering : if True, rendering is made by original Openpose library. Otherwise rendering is to the
-        responsability of the user (~0.2 fps faster)
-        """
-
-		self.pose_detector = pm.PoseDetector()
+		self.pose_detector = MediaPipeWrapper()
 		self.pose_kps = []
 		self.left_hand_kps = []
 		self.right_hand_kps = []
@@ -142,7 +135,8 @@ class PoseDetectorWrapper:
 				cv2.line(frame, (p1_x, p1_y), (p2_x, p2_y), col, thickness)
 
 	def get_body_kp(self, kp_name="nose"):
-		"""Return the coordinates of a keypoint named 'kp_name', or None if keypoint not detected"""
+		""" Return the coordinates of a keypoint named 'kp_name', or None if keypoint not detected"""
+
 		try:
 			_, x, y = self.pose_kps[body_kp_name_to_id[kp_name]]
 		except:
@@ -152,72 +146,3 @@ class PoseDetectorWrapper:
 			return int(x), int(y)
 		else:
 			return None
-
-
-if __name__ == '__main__':
-
-	ap = argparse.ArgumentParser()
-	ap.add_argument("-i", "--input", default="0", help="input video file (0, filename, rtsp://admin:admin@192.168.1.71/1, ...")
-	ap.add_argument("-n", "--number_people_max", default=-1, help="limit the number of people detected")
-	ap.add_argument("-f", "--face", action="store_true", help="enable face keypoint detection")
-	ap.add_argument("--frt", type=float, default=0.4, help="face rendering threshold")
-	ap.add_argument("-o", "--output", help="path to output video file")
-	ap.add_argument("-r", "--rendering", default=True, action="store_true", help="display in a separate window the original rendering made by Openpose lib")
-
-	args = ap.parse_args()
-
-	if args.input.isdigit():
-		args.input = int(args.input)
-		w_h_list = [(960, 720), (640, 480), (320, 240)]
-		w_h_idx = 0
-
-	# Read video
-	video = cv2.VideoCapture(args.input)
-	if isinstance(args.input, int):
-		w, h = w_h_list[w_h_idx]
-		video.set(cv2.CAP_PROP_FRAME_WIDTH, w)
-		video.set(cv2.CAP_PROP_FRAME_HEIGHT, h)
-
-	ok, frame = video.read()
-	h, w, _ = frame.shape
-	if args.output:
-		fourcc = cv2.VideoWriter_fourcc(*"MJPG")
-		out = cv2.VideoWriter(args.output, fourcc, 30, (w, h))
-
-	my_op = PoseDetectorWrapper()
-
-	fps = FPS()
-	while True:
-		# Read a new frame
-		ok, frame = video.read()
-		if not ok:
-			break
-		fps.update()
-		frame = frame.copy()
-		nb_persons, body_kps, face_kps = my_op.eval(frame)
-
-		if len(body_kps) == 0:
-			continue
-		my_op.draw_body(frame)
-		if args.face:
-			my_op.draw_face(frame)
-			my_op.draw_eyes(frame)
-
-		fps.display(frame)
-		cv2.imshow("Rendering", frame)
-		if args.output:
-			out.write(frame)
-		# Exit if ESC pressed
-		k = cv2.waitKey(1) & 0xff
-		if k == 27:
-			break
-		elif k == 32:  # space
-			cv2.waitKey(0)
-		elif k == ord("s") and isinstance(args.input, int):
-			w_h_idx = (w_h_idx + 1) % len(w_h_list)
-			w, h = w_h_list[w_h_idx]
-			video.set(cv2.CAP_PROP_FRAME_WIDTH, w)
-			video.set(cv2.CAP_PROP_FRAME_HEIGHT, h)
-
-	video.release()
-	cv2.destroyAllWindows()
