@@ -60,4 +60,4 @@ def run_socket_server(socket: WebSocketManager):
 
 
 if __name__ == "__main__":
-	run_http_server(setup_server_runner(VideoSource(), self.pygame_screen))
+	run_http_server(setup_server_runner(VideoSource(), None))

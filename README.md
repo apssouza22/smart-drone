@@ -25,7 +25,7 @@ to make a low-cost Drone smarter([Tello](https://m.dji.com/ie/shop/tello-series)
 
 ## Install dependencies
 We provide the requirements.txt file with the required Python dependencies but OpenCV and FFMPEG
-is tricky to install, and you should check on the internet how to install it properly
+is tricky to install, and you should check on the internet how to install those properly
 
 ```pip install -r requirements.txt```
 
