@@ -23,6 +23,9 @@ to make a low-cost Drone smarter([Tello](https://m.dji.com/ie/shop/tello-series)
 - HTML 5 joystick control
 - Apple IOS joystick control (check the ios branch)
 
+
+<a href="https://www.buymeacoffee.com/apssouza"><img src="https://miro.medium.com/max/654/1*rQv8JgstmK0juxP-Kb4IGg.jpeg"></a>
+
 ## Install dependencies
 We provide the requirements.txt file with the required Python dependencies but OpenCV and FFMPEG
 is tricky to install, and you should check on the internet how to install those properly
