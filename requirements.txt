@@ -7,3 +7,5 @@ aiohttp
 simple_pid
 aiortc
 mediapipe
+aiohttp_cors
+ujson
