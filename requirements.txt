@@ -1,4 +1,5 @@
 numpy>=1.18.1
+mediapipe>=0.8.11
 opencv-python
 pygame
 djitellopy
@@ -6,4 +7,6 @@ av
 aiohttp
 simple_pid
 aiortc
-mediapipe
+aiohttp_cors
+ujson
+cv2

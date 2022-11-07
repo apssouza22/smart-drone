@@ -24,8 +24,6 @@ to make a low-cost Drone smarter([Tello](https://m.dji.com/ie/shop/tello-series)
 - Apple IOS joystick control (check the ios branch)
 
 
-<a href="https://www.buymeacoffee.com/apssouza"><img src="https://miro.medium.com/max/654/1*rQv8JgstmK0juxP-Kb4IGg.jpeg"></a>
-
 ## Install dependencies
 We provide the requirements.txt file with the required Python dependencies but OpenCV and FFMPEG
 is tricky to install, and you should check on the internet how to install those properly
@@ -39,6 +37,10 @@ simulated option which will use your comera and you will be able to see the dron
 If you have the Tello drone, you will need to turn off the mock on the `main` function call.
 
 ***The path window has to be focused in order to use the keyboard control***
+
+### If this project helped you, consider leaving a star  and by me a coffee
+<a href="https://www.buymeacoffee.com/apssouza"><img src="https://miro.medium.com/max/654/1*rQv8JgstmK0juxP-Kb4IGg.jpeg"></a>
+
 
 ## Libraries and packages
 

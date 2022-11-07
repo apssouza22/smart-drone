@@ -6,26 +6,14 @@ import math
 
 class MediaPipeWrapper:
 
-	def __init__(self, mode=False, up_body=False, smooth=True, detection_con=0.75, track_con=0.5):
+	def __init__(self):
 
 		self.right_hand_positions = []
 		self.left_hand_positions = []
 		self.pose_positions = []
-		self.mode = mode
-		self.up_body = up_body
-		self.smooth = smooth
-		self.detection_con = detection_con
-		self.track_con = track_con
-
 		self.mpDraw = mp.solutions.drawing_utils
 		self.mpPose = mp.solutions.holistic
-		self.pose = self.mpPose.Holistic(
-			self.mode,
-			self.up_body,
-			self.smooth,
-			self.detection_con,
-			self.track_con
-		)
+		self.pose = self.mpPose.Holistic()
 		self.results = None
 		self.pose_positions = []
 
