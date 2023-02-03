@@ -9,4 +9,4 @@ simple_pid
 aiortc
 aiohttp_cors
 ujson
-cv2
+
