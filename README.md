@@ -1,7 +1,6 @@
 # Smart drone
 
-This project leverage from Machine learning/Computer vision and Robotics
-to make a low-cost Drone smarter([Tello](https://m.dji.com/ie/shop/tello-series)).
+Our project aims to redefine the utility of low-cost drones by infusing them with cutting-edge Machine Learning, Computer Vision, and Robotics technologies. We are focused on developing a multifunctional drone system capable of complex autonomous tasks, interactive controls, and real-time data processing, all packaged within an economically feasible model. ([Tello](https://m.dji.com/ie/shop/tello-series)).
 
 
 <img src="assets/demo.jpg"/>
@@ -10,18 +9,23 @@ to make a low-cost Drone smarter([Tello](https://m.dji.com/ie/shop/tello-series)
 
 
 ## Features  
-- Control the drone by gestures
-- People tracking
-- People searching
-- Sound feedback
-- Morse commands using the camera
-- Keyboard control
-- Drone path monitoring
-- Drone path planning
-- Video streaming using Webrtc
-- Remote control using websocket
-- HTML 5 joystick control
-- Apple IOS joystick control (check the ios branch)
+
+- Advanced Navigation and Tracking:
+  - Autonomous Navigation and Path Planning: Implement sophisticated pathfinding algorithms to navigate challenging environments autonomously.
+  - People Tracking and Searching: Utilize computer vision to identify and follow individuals in various settings, enhancing capabilities in security and rescue operations.
+- Interactive Control Methods:
+  - Gesture-Based Control: Control drone movements and functions through intuitive hand gestures.
+  - Keyboard and Joystick Control: Operate the drone using a keyboard or HTML5 and iOS-compatible joysticks for precision and flexibility.
+  - Remote Control via WebSocket: Manage drone operations remotely with real-time responsiveness.
+- Enhanced Communication and Feedback:
+  - Sound Feedback: Use audio cues for interactive feedback and status updates from the drone.
+  - Morse Commands via Camera: Send commands to the drone using Morse code, interpreted through visual inputs from the camera.
+- Real-Time Data and Video Management:
+  - Video Streaming with WebRTC: Stream live video footage directly through WebRTC, enabling real-time visual feedback for monitoring and decision-making.
+  - Drone Path Monitoring: Track and record the drone’s flight path to analyze flight patterns and optimize routes.
+- Cost-Effective and User-Friendly Design:
+  - Focus on integrating cost-effective hardware and open-source software to keep the drone affordable and accessible.
+  - Develop an intuitive interface that allows users to easily manage drone settings, monitor flight paths, and analyze data.
 
 
 ## Install dependencies
